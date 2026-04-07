@@ -1,0 +1,19 @@
+{
+  "name": "tetris-frontend",
+  "version": "1.0.0",
+  "description": "俄罗斯方块多人对战系统 - 前端",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/**/*.js"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "vite": "^5.2.0"
+  }
+}

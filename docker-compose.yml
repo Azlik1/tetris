@@ -40,10 +40,11 @@ services:
       - tetris-network
 
   backend:
-    build: .
+    build: ./backend
     container_name: tetris-backend
     ports:
       - "3000:3000"
+    working_dir: /app
     environment:
       - MYSQL_HOST=mysql
       - MYSQL_USER=root
@@ -58,6 +59,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+    volumes:
+      - ./frontend:/frontend:ro
     networks:
       - tetris-network
 

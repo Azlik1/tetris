@@ -1,0 +1,27 @@
+{
+  "name": "tetris-backend",
+  "version": "1.0.0",
+  "description": "俄罗斯方块多人对战系统 - 后端服务",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "node --test test/"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.3.1",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.6.5",
+    "redis": "^4.6.12",
+    "socket.io": "^4.7.2"
+  },
+  "devDependencies": {
+    "eslint": "^8.57.0",
+    "nodemon": "^3.0.2",
+    "prettier": "^3.2.5"
+  }
+}

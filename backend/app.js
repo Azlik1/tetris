@@ -47,7 +47,7 @@ const apiLimiter = rateLimit({
 });
 
 // 托管前端静态文件
-app.use(express.static(path.join(__dirname, '../client')));
+app.use(express.static(path.join(__dirname, '../frontend')));
 
 // 健康检查接口
 app.get('/health', async (req, res) => {
@@ -75,7 +75,7 @@ app.get('/health', async (req, res) => {
 
 // 根路径返回前端页面
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client', 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
 });
 
 // 用户注册路由

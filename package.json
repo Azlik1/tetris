@@ -1,23 +1,30 @@
 {
-  "name": "tetris-multiplayer",
+  "name": "tetris-multiplayer-monorepo",
   "version": "1.0.0",
-  "description": "基于Socket.IO的多人在线俄罗斯方块游戏",
-  "main": "server/app.js",
+  "description": "俄罗斯方块多人对战系统",
+  "private": true,
   "scripts": {
-    "start": "node server/app.js",
-    "dev": "nodemon server/app.js"
-  },
-  "dependencies": {
-    "bcrypt": "^5.1.1",
-    "cors": "^2.8.5",
-    "express": "^4.18.2",
-    "express-rate-limit": "^8.3.1",
-    "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.6.5",
-    "redis": "^4.6.12",
-    "socket.io": "^4.7.2"
+    "postinstall": "cd backend && npm install && cd ../frontend && npm install",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:frontend": "cd frontend && npm run build",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f",
+    "k8s:deploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy/deploy.ps1",
+    "k8s:undeploy": "powershell -ExecutionPolicy Bypass -File scripts/deploy/undeploy.ps1",
+    "lint": "eslint backend/**/*.js frontend/**/*.js",
+    "lint:fix": "eslint backend/**/*.js frontend/**/*.js --fix",
+    "test": "cd backend && npm test",
+    "db:init": "mysql -u root -p < backend/modules/database/schema.sql"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
-  }
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ]
 }

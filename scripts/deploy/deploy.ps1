@@ -89,7 +89,7 @@ function Invoke-BuildAndPushImage {
     $fullImageTag = "${ImageRegistry}/${ImageName}:${Version}"
     
     Write-Log "构建镜像: $fullImageTag"
-    docker build -t $fullImageTag -t "${ImageRegistry}/${ImageName}:latest" .
+    docker build -t $fullImageTag -t "${ImageRegistry}/${ImageName}:latest" ./backend
     
     if ($LASTEXITCODE -ne 0) {
         Write-Log "镜像构建失败" "ERROR"

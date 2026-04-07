@@ -1,9 +1,92 @@
-# 忽略 Node.js 依赖包
+# ==============================================
+# Dependencies
+# ==============================================
 node_modules/
+*/node_modules/
+
+# ==============================================
+# Environment & Config
+# ==============================================
+.env
+.env.local
+.env.*.local
+*.env
+
+# ==============================================
+# Database & Runtime Files
+# ==============================================
+dump.rdb
+*.rdb
+*.sql
+*.db
+*.sqlite
+
+# ==============================================
+# Logs
+# ==============================================
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.env
-.DS_Store
+*.log
+server/logs/
+logs/
+
+# ==============================================
+# Build Outputs
+# ==============================================
 dist/
+*/dist/
 build/
+*/build/
+out/
+*.tsbuildinfo
+
+# ==============================================
+# OS Generated Files
+# ==============================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ==============================================
+# IDE & Editor
+# ==============================================
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ==============================================
+# Test & Coverage
+# ==============================================
+coverage/
+*.lcov
+.nyc_output
+
+# ==============================================
+# Docker & Deployment
+# ==============================================
+docker-compose.override.yml
+docker-stack.yml
+*.pid
+*.seed
+*.pid.lock
+
+# ==============================================
+# Cache
+# ==============================================
+.cache/
+.parcel-cache/
+.eslintcache
