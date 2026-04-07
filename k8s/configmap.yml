@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tetris-config
+  namespace: tetris-game
+  labels:
+    app: tetris-backend
+    version: v1.0.0
+data:
+  MYSQL_HOST: mysql
+  MYSQL_USER: root
+  MYSQL_DATABASE: tetris_game
+  REDIS_HOST: redis
+  REDIS_PORT: "6379"
+  NODE_ENV: "production"

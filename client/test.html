@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试登录注册</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 3px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    .message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 3px;
+      text-align: center;
+    }
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .form-toggle {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .form-toggle a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    .form-toggle a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 登录表单 -->
+    <div id="loginForm">
+      <h2>登录</h2>
+      <div id="loginMessage" class="message" style="display: none;"></div>
+      <div class="form-group">
+        <label for="loginUsername">用户名</label>
+        <input type="text" id="loginUsername" placeholder="请输入用户名">
+      </div>
+      <div class="form-group">
+        <label for="loginPassword">密码</label>
+        <input type="password" id="loginPassword" placeholder="请输入密码">
+      </div>
+      <div class="form-group">
+        <button id="loginButton">登录</button>
+      </div>
+      <div class="form-toggle">
+        还没有账号？ <a href="#" id="showRegister">立即注册</a>
+      </div>
+    </div>
+    
+    <!-- 注册表单 -->
+    <div id="registerForm" style="display: none;">
+      <h2>注册</h2>
+      <div id="registerMessage" class="message" style="display: none;"></div>
+      <div class="form-group">
+        <label for="registerUsername">用户名</label>
+        <input type="text" id="registerUsername" placeholder="请输入用户名">
+      </div>
+      <div class="form-group">
+        <label for="registerPassword">密码</label>
+        <input type="password" id="registerPassword" placeholder="请输入密码">
+      </div>
+      <div class="form-group">
+        <button id="registerButton">注册</button>
+      </div>
+      <div class="form-toggle">
+        已有账号？ <a href="#" id="showLogin">立即登录</a>
+      </div>
+    </div>
+  </div>
+  
+  <script type="module">
+    // 导入用户管理器
+    import userManager from './js/user.js';
+    
+    // DOM元素
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const loginMessage = document.getElementById('loginMessage');
+    const registerMessage = document.getElementById('registerMessage');
+    const showRegister = document.getElementById('showRegister');
+    const showLogin = document.getElementById('showLogin');
+    const loginButton = document.getElementById('loginButton');
+    const registerButton = document.getElementById('registerButton');
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    const registerUsername = document.getElementById('registerUsername');
+    const registerPassword = document.getElementById('registerPassword');
+    
+    // 显示消息
+    function showMessage(element, message, type) {
+      element.textContent = message;
+      element.className = `message ${type}`;
+      element.style.display = 'block';
+      setTimeout(() => {
+        element.style.display = 'none';
+      }, 3000);
+    }
+    
+    // 绑定注册链接点击事件
+    showRegister.addEventListener('click', function(e) {
+      e.preventDefault();
+      loginForm.style.display = 'none';
+      registerForm.style.display = 'block';
+    });
+    
+    // 绑定登录链接点击事件
+    showLogin.addEventListener('click', function(e) {
+      e.preventDefault();
+      registerForm.style.display = 'none';
+      loginForm.style.display = 'block';
+    });
+    
+    // 登录按钮事件
+    loginButton.addEventListener('click', async () => {
+      const username = loginUsername.value.trim();
+      const password = loginPassword.value;
+      
+      console.log('登录按钮被点击，用户名:', username);
+      
+      // 输入验证
+      if (!username) {
+        showMessage(loginMessage, '请输入用户名', 'error');
+        return;
+      }
+      if (!password) {
+        showMessage(loginMessage, '请输入密码', 'error');
+        return;
+      }
+      if (username.length < 3 || username.length > 20) {
+        showMessage(loginMessage, '用户名长度应在3-20个字符之间', 'error');
+        return;
+      }
+      if (password.length < 6) {
+        showMessage(loginMessage, '密码长度至少为6个字符', 'error');
+        return;
+      }
+      
+      try {
+        console.log('开始登录请求');
+        const result = await userManager.login(username, password);
+        console.log('登录请求结果:', result);
+        if (result.success) {
+          showMessage(loginMessage, result.message, 'success');
+        } else {
+          showMessage(loginMessage, result.message, 'error');
+        }
+      } catch (error) {
+        console.error('登录失败:', error);
+        showMessage(loginMessage, '登录失败，请稍后重试', 'error');
+      }
+    });
+    
+    // 注册按钮事件
+    registerButton.addEventListener('click', async () => {
+      const username = registerUsername.value.trim();
+      const password = registerPassword.value;
+      
+      console.log('注册按钮被点击，用户名:', username);
+      
+      // 输入验证
+      if (!username) {
+        showMessage(registerMessage, '请输入用户名', 'error');
+        return;
+      }
+      if (!password) {
+        showMessage(registerMessage, '请输入密码', 'error');
+        return;
+      }
+      if (username.length < 3 || username.length > 20) {
+        showMessage(registerMessage, '用户名长度应在3-20个字符之间', 'error');
+        return;
+      }
+      if (password.length < 6) {
+        showMessage(registerMessage, '密码长度至少为6个字符', 'error');
+        return;
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+        showMessage(registerMessage, '用户名只能包含字母、数字和下划线', 'error');
+        return;
+      }
+      
+      try {
+        console.log('开始注册请求');
+        const result = await userManager.register(username, password);
+        console.log('注册请求结果:', result);
+        if (result.success) {
+          showMessage(registerMessage, result.message, 'success');
+          // 注册成功后切换到登录表单
+          setTimeout(() => {
+            registerForm.style.display = 'none';
+            loginForm.style.display = 'block';
+          }, 1000);
+        } else {
+          showMessage(registerMessage, result.message, 'error');
+        }
+      } catch (error) {
+        console.error('注册失败:', error);
+        showMessage(registerMessage, '注册失败，请稍后重试', 'error');
+      }
+    });
+  </script>
+</body>
+</html>

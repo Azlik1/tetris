@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>简单测试</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <button id="testButton">测试按钮</button>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const testButton = document.getElementById('testButton');
+      console.log('测试按钮元素:', testButton);
+      
+      if (testButton) {
+        testButton.addEventListener('click', function() {
+          console.log('按钮被点击了！');
+          alert('按钮被点击了！');
+        });
+        console.log('事件监听器已绑定');
+      } else {
+        console.error('测试按钮元素未找到');
+      }
+    });
+  </script>
+</body>
+</html>
