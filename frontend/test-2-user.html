@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试2 - 用户系统测试</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      min-height: 100vh;
+    }
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .test-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 768px) {
+      .test-container {
+        grid-template-columns: 1fr;
+      }
+    }
+    .test-panel {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .test-panel h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 18px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 600;
+      font-size: 14px;
+      color: #444;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 10px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+    .form-group input:focus {
+      outline: none;
+      border-color: #11998e;
+      box-shadow: 0 0 0 3px rgba(17, 153, 142, 0.1);
+    }
+    .form-group input.error {
+      border-color: #ef4444;
+      background: #fef2f2;
+    }
+    .form-group input.success {
+      border-color: #22c55e;
+      background: #f0fdf4;
+    }
+    .error-message {
+      color: #ef4444;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+    .error-message.show {
+      display: block;
+    }
+    .btn {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #11998e, #38ef7d);
+      color: white;
+    }
+    .btn-primary:hover {
+      filter: brightness(1.1);
+    }
+    .btn-secondary {
+      background: #3b82f6;
+      color: white;
+    }
+    .btn-switch {
+      background: transparent;
+      color: #11998e;
+      border: 2px solid #11998e;
+      padding: 8px 16px;
+      width: auto;
+      font-size: 13px;
+    }
+    .btn-switch:hover {
+      background: #11998e;
+      color: white;
+    }
+    .log-container {
+      background: #0f172a;
+      color: #94a3b8;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 12px;
+      max-height: 400px;
+      overflow-y: auto;
+      margin-top: 15px;
+    }
+    .log-item {
+      margin: 3px 0;
+      padding: 3px 6px;
+      border-radius: 4px;
+    }
+    .log-info {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+    .log-success {
+      background: rgba(34, 197, 94, 0.2);
+      color: #4ade80;
+    }
+    .log-error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+    .log-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+    .validation-rules {
+      background: #f8fafc;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #64748b;
+      margin-bottom: 15px;
+    }
+    .validation-rules h4 {
+      margin: 0 0 8px;
+      color: #334155;
+    }
+    .validation-rules ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .validation-rules li {
+      margin: 3px 0;
+    }
+    .result-panel {
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
+    .result-panel.show {
+      display: block;
+    }
+    .result-success {
+      background: #f0fdf4;
+      border: 1px solid #86efac;
+      color: #166534;
+    }
+    .result-error {
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #991b1b;
+    }
+    .status-tabs {
+      display: flex;
+      gap: 5px;
+    }
+    .tab {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tab-pass {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .tab-fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .test-cases {
+      margin-top: 20px;
+    }
+    .test-case {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+      background: #f8fafc;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    .test-case .icon {
+      margin-right: 10px;
+      font-size: 16px;
+    }
+    .test-case.pass {
+      border-left: 3px solid #22c55e;
+    }
+    .test-case.fail {
+      border-left: 3px solid #ef4444;
+    }
+  </style>
+</head>
+<body>
+  <h1>👤 测试2 - 用户系统验证</h1>
+
+  <div class="test-container">
+    <div class="test-panel">
+      <h2>
+        <span id="formTitle">🔐 用户登录</span>
+        <button class="btn btn-switch" id="switchForm">切换到注册</button>
+      </h2>
+
+      <div class="validation-rules">
+        <h4>📋 校验规则</h4>
+        <ul>
+          <li>用户名：3-20位，字母、数字、下划线</li>
+          <li>密码：8-50位，包含大小写、数字、特殊字符</li>
+          <li>空值实时拦截</li>
+        </ul>
+      </div>
+
+      <div id="loginFormFields">
+        <div class="form-group">
+          <label>用户名</label>
+          <input type="text" id="loginUsername" placeholder="请输入用户名">
+          <div class="error-message" id="loginUsernameError"></div>
+        </div>
+        <div class="form-group">
+          <label>密码</label>
+          <input type="password" id="loginPassword" placeholder="请输入密码">
+          <div class="error-message" id="loginPasswordError"></div>
+        </div>
+        <button class="btn btn-primary" id="loginBtn">🚀 模拟登录</button>
+      </div>
+
+      <div id="registerFormFields" style="display: none;">
+        <div class="form-group">
+          <label>用户名</label>
+          <input type="text" id="regUsername" placeholder="3-20位字母数字下划线">
+          <div class="error-message" id="regUsernameError"></div>
+        </div>
+        <div class="form-group">
+          <label>密码</label>
+          <input type="password" id="regPassword" placeholder="8位以上，含大小写数字特殊字符">
+          <div class="error-message" id="regPasswordError"></div>
+        </div>
+        <div class="form-group">
+          <label>确认密码</label>
+          <input type="password" id="regPassword2" placeholder="再次输入密码">
+          <div class="error-message" id="regPassword2Error"></div>
+        </div>
+        <button class="btn btn-primary" id="registerBtn">📝 模拟注册</button>
+      </div>
+
+      <div class="result-panel result-success" id="successResult">
+        <strong>✅ 操作成功！</strong>
+        <p id="successMessage"></p>
+      </div>
+
+      <div class="result-panel result-error" id="errorResult">
+        <strong>❌ 操作失败！</strong>
+        <p id="errorMessage"></p>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn btn-secondary" id="testEmptyBtn" style="flex: 1; font-size: 12px;">空值测试</button>
+        <button class="btn btn-secondary" id="testInvalidBtn" style="flex: 1; font-size: 12px;">非法输入测试</button>
+        <button class="btn btn-secondary" id="testValidBtn" style="flex: 1; font-size: 12px;">合法输入测试</button>
+      </div>
+    </div>
+
+    <div class="test-panel">
+      <h2>
+        📝 测试日志
+        <div class="status-tabs">
+          <span class="tab tab-pass" id="passCount">通过: 0</span>
+          <span class="tab tab-fail" id="failCount">失败: 0</span>
+        </div>
+      </h2>
+      <button class="btn btn-secondary" id="clearLogBtn" style="width: auto; margin-bottom: 10px; padding: 6px 12px;">清空日志</button>
+      <div class="log-container" id="logContainer"></div>
+
+      <div class="test-cases" id="testCases">
+        <h3 style="font-size: 14px; color: #444;">🎯 测试用例覆盖</h3>
+        <div class="test-case" data-test="empty">
+          <span class="icon">⏳</span>
+          <span>空用户名/密码校验</span>
+        </div>
+        <div class="test-case" data-test="short">
+          <span class="icon">⏳</span>
+          <span>用户名过短 (小于3位)</span>
+        </div>
+        <div class="test-case" data-test="long">
+          <span class="icon">⏳</span>
+          <span>用户名过长 (大于20位)</span>
+        </div>
+        <div class="test-case" data-test="pattern">
+          <span class="icon">⏳</span>
+          <span>用户名字符非法</span>
+        </div>
+        <div class="test-case" data-test="pass-short">
+          <span class="icon">⏳</span>
+          <span>密码过短 (小于8位)</span>
+        </div>
+        <div class="test-case" data-test="pass-complex">
+          <span class="icon">⏳</span>
+          <span>密码复杂度校验</span>
+        </div>
+        <div class="test-case" data-test="form-switch">
+          <span class="icon">⏳</span>
+          <span>登录/注册表单切换</span>
+        </div>
+        <div class="test-case" data-test="api">
+          <span class="icon">⏳</span>
+          <span>接口请求模拟</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let stats = { pass: 0, fail: 0 };
+    let isLoginForm = true;
+    const executedTests = new Set();
+
+    function updateStats() {
+      document.getElementById('passCount').textContent = `通过: ${stats.pass}`;
+      document.getElementById('failCount').textContent = `失败: ${stats.fail}`;
+    }
+
+    function markTest(testId, passed) {
+      if (executedTests.has(testId)) return;
+      executedTests.add(testId);
+      
+      const el = document.querySelector(`.test-case[data-test="${testId}"]`);
+      if (el) {
+        el.classList.add(passed ? 'pass' : 'fail');
+        el.querySelector('.icon').textContent = passed ? '✅' : '❌';
+        if (passed) stats.pass++;
+        else stats.fail++;
+        updateStats();
+      }
+    }
+
+    function log(message, type = 'info') {
+      const container = document.getElementById('logContainer');
+      const item = document.createElement('div');
+      const time = new Date().toLocaleTimeString();
+      item.className = `log-item log-${type}`;
+      item.textContent = `[${time}] ${message}`;
+      container.appendChild(item);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function showResult(success, message) {
+      document.getElementById('successResult').classList.toggle('show', success);
+      document.getElementById('errorResult').classList.toggle('show', !success);
+      if (success) {
+        document.getElementById('successMessage').textContent = message;
+      } else {
+        document.getElementById('errorMessage').textContent = message;
+      }
+    }
+
+    function hideResults() {
+      document.getElementById('successResult').classList.remove('show');
+      document.getElementById('errorResult').classList.remove('show');
+    }
+
+    function showFieldError(fieldId, message) {
+      const input = document.getElementById(fieldId);
+      const errorEl = document.getElementById(fieldId + 'Error');
+      input.classList.add('error');
+      input.classList.remove('success');
+      errorEl.textContent = message;
+      errorEl.classList.add('show');
+    }
+
+    function showFieldSuccess(fieldId) {
+      const input = document.getElementById(fieldId);
+      const errorEl = document.getElementById(fieldId + 'Error');
+      input.classList.remove('error');
+      input.classList.add('success');
+      errorEl.classList.remove('show');
+    }
+
+    function clearFieldErrors() {
+      ['loginUsername', 'loginPassword', 'regUsername', 'regPassword', 'regPassword2'].forEach(id => {
+        const input = document.getElementById(id);
+        const errorEl = document.getElementById(id + 'Error');
+        if (input) input.classList.remove('error', 'success');
+        if (errorEl) errorEl.classList.remove('show');
+      });
+    }
+
+    function validateUsername(username) {
+      if (!username || !username.trim()) {
+        return { valid: false, message: '用户名不能为空' };
+      }
+      const clean = username.trim();
+      if (clean.length < 3) {
+        return { valid: false, message: '用户名至少3个字符' };
+      }
+      if (clean.length > 20) {
+        return { valid: false, message: '用户名最多20个字符' };
+      }
+      if (!/^[a-zA-Z0-9_]+$/.test(clean)) {
+        return { valid: false, message: '用户名只能包含字母、数字、下划线' };
+      }
+      return { valid: true };
+    }
+
+    function validatePassword(password) {
+      if (!password) {
+        return { valid: false, message: '密码不能为空' };
+      }
+      if (password.length < 8) {
+        return { valid: false, message: '密码至少8个字符' };
+      }
+      if (password.length > 50) {
+        return { valid: false, message: '密码最多50个字符' };
+      }
+
+      const issues = [];
+      if (!/[A-Z]/.test(password)) issues.push('大写字母');
+      if (!/[a-z]/.test(password)) issues.push('小写字母');
+      if (!/[0-9]/.test(password)) issues.push('数字');
+      if (!/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/.test(password)) issues.push('特殊字符');
+
+      if (issues.length > 0) {
+        return { valid: false, message: `密码缺少: ${issues.join('、')}` };
+      }
+      return { valid: true };
+    }
+
+    ['loginUsername', 'regUsername'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        const result = validateUsername(this.value);
+        if (result.valid) {
+          showFieldSuccess(id);
+        } else if (this.value) {
+          showFieldError(id, result.message);
+        } else {
+          clearFieldErrors();
+        }
+      });
+    });
+
+    ['loginPassword', 'regPassword'].forEach(id => {
+      document.getElementById(id).addEventListener('input', function() {
+        const result = validatePassword(this.value);
+        if (result.valid) {
+          showFieldSuccess(id);
+        } else if (this.value) {
+          showFieldError(id, result.message);
+        }
+      });
+    });
+
+    document.getElementById('regPassword2').addEventListener('input', function() {
+      const p1 = document.getElementById('regPassword').value;
+      if (this.value && this.value !== p1) {
+        showFieldError('regPassword2', '两次密码不一致');
+      } else if (this.value) {
+        showFieldSuccess('regPassword2');
+      }
+    });
+
+    document.getElementById('switchForm').addEventListener('click', function() {
+      isLoginForm = !isLoginForm;
+      hideResults();
+      clearFieldErrors();
+      
+      if (isLoginForm) {
+        document.getElementById('formTitle').textContent = '🔐 用户登录';
+        this.textContent = '切换到注册';
+        document.getElementById('loginFormFields').style.display = 'block';
+        document.getElementById('registerFormFields').style.display = 'none';
+      } else {
+        document.getElementById('formTitle').textContent = '📝 用户注册';
+        this.textContent = '切换到登录';
+        document.getElementById('loginFormFields').style.display = 'none';
+        document.getElementById('registerFormFields').style.display = 'block';
+      }
+      markTest('form-switch', true);
+      log(`表单切换: ${isLoginForm ? '登录' : '注册'}`, 'info');
+    });
+
+    document.getElementById('loginBtn').addEventListener('click', async function() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+
+      log('开始登录验证...', 'warning');
+
+      const userResult = validateUsername(username);
+      const passResult = validatePassword(password);
+
+      if (!userResult.valid) {
+        showFieldError('loginUsername', userResult.message);
+        showResult(false, userResult.message);
+        log(`用户名验证失败: ${userResult.message}`, 'error');
+        return;
+      }
+
+      if (!passResult.valid) {
+        showFieldError('loginPassword', passResult.message);
+        showResult(false, passResult.message);
+        log(`密码验证失败: ${passResult.message}`, 'error');
+        return;
+      }
+
+      log('正在调用接口 /api/login...', 'info');
+      this.disabled = true;
+      this.textContent = '登录中...';
+
+      await new Promise(r => setTimeout(r, 1000));
+
+      this.disabled = false;
+      this.textContent = '🚀 模拟登录';
+
+      showResult(true, `用户 "${username}" 登录成功！令牌已保存`);
+      log('接口请求成功', 'success');
+      markTest('api', true);
+    });
+
+    document.getElementById('registerBtn').addEventListener('click', async function() {
+      const username = document.getElementById('regUsername').value;
+      const password = document.getElementById('regPassword').value;
+      const password2 = document.getElementById('regPassword2').value;
+
+      log('开始注册验证...', 'warning');
+
+      if (password !== password2) {
+        showResult(false, '两次输入的密码不一致');
+        log('密码不一致，验证终止', 'error');
+        return;
+      }
+
+      const userResult = validateUsername(username);
+      const passResult = validatePassword(password);
+
+      if (!userResult.valid || !passResult.valid) {
+        showResult(false, userResult.message || passResult.message);
+        log('表单验证失败', 'error');
+        return;
+      }
+
+      log('正在调用接口 /api/register...', 'info');
+      this.disabled = true;
+      this.textContent = '注册中...';
+
+      await new Promise(r => setTimeout(r, 1000));
+
+      this.disabled = false;
+      this.textContent = '📝 模拟注册';
+
+      showResult(true, `用户 "${username}" 注册成功！请登录`);
+      log('注册接口请求成功', 'success');
+    });
+
+    document.getElementById('testEmptyBtn').addEventListener('click', function() {
+      log('=== 空值测试开始 ===', 'warning');
+      document.getElementById('loginUsername').value = '';
+      document.getElementById('loginPassword').value = '';
+      
+      const r1 = validateUsername('');
+      const r2 = validatePassword('');
+      
+      if (!r1.valid && !r2.valid) {
+        log('空值校验拦截成功 ✅', 'success');
+        markTest('empty', true);
+      } else {
+        log('空值校验失败 ❌', 'error');
+        markTest('empty', false);
+      }
+    });
+
+    document.getElementById('testInvalidBtn').addEventListener('click', function() {
+      log('=== 非法输入测试开始 ===', 'warning');
+      
+      const tests = [
+        { id: 'short', user: 'ab', desc: '用户名过短' },
+        { id: 'long', user: 'a'.repeat(25), desc: '用户名过长' },
+        { id: 'pattern', user: '用户@#$', desc: '非法字符' },
+        { id: 'pass-short', pass: '123', desc: '密码过短' },
+        { id: 'pass-complex', pass: '12345678', desc: '密码复杂度' }
+      ];
+
+      tests.forEach(t => {
+        if (t.user) {
+          const r = validateUsername(t.user);
+          if (!r.valid) {
+            log(`${t.desc} 拦截成功 ✅`, 'success');
+            markTest(t.id, true);
+          } else {
+            log(`${t.desc} 未拦截 ❌`, 'error');
+            markTest(t.id, false);
+          }
+        }
+        if (t.pass) {
+          const r = validatePassword(t.pass);
+          if (!r.valid) {
+            log(`${t.desc} 拦截成功 ✅`, 'success');
+            markTest(t.id, true);
+          } else {
+            log(`${t.desc} 未拦截 ❌`, 'error');
+            markTest(t.id, false);
+          }
+        }
+      });
+    });
+
+    document.getElementById('testValidBtn').addEventListener('click', function() {
+      log('=== 合法输入测试开始 ===', 'warning');
+      
+      document.getElementById('regUsername').value = 'test_user01';
+      document.getElementById('regPassword').value = 'Test@123456';
+      document.getElementById('regPassword2').value = 'Test@123456';
+
+      const r1 = validateUsername('test_user01');
+      const r2 = validatePassword('Test@123456');
+
+      if (r1.valid && r2.valid) {
+        log('合法输入验证通过 ✅', 'success');
+        showFieldSuccess('regUsername');
+        showFieldSuccess('regPassword');
+      } else {
+        log('合法输入验证失败 ❌', 'error');
+      }
+    });
+
+    document.getElementById('clearLogBtn').addEventListener('click', function() {
+      document.getElementById('logContainer').innerHTML = '';
+    });
+
+    log('用户系统测试页面加载完成 🚀', 'success');
+    log('开始表单验证测试或点击快捷测试按钮', 'info');
+  </script>
+</body>
+</html>

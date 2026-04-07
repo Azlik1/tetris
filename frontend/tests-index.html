@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试页面总览</title>
+  <link rel="stylesheet" href="src/styles/main.css">
+  <style>
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .header h1 {
+      color: var(--primary-color);
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    .header p {
+      color: var(--text-secondary);
+      font-size: 16px;
+    }
+    .test-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-bottom: 40px;
+    }
+    .test-card {
+      background: var(--background-panel);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      border-top: 4px solid;
+    }
+    .test-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+    .test-card.mandatory {
+      border-top-color: var(--primary-color);
+    }
+    .test-card.optional {
+      border-top-color: var(--warning-color);
+    }
+    .test-card h3 {
+      margin: 0 0 12px 0;
+      font-size: 18px;
+    }
+    .test-card .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .badge.mandatory {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .badge.optional {
+      background: #ffedd5;
+      color: #92400e;
+    }
+    .test-card p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 16px;
+      line-height: 1.6;
+    }
+    .test-card .features {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+    .test-card .features li {
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .test-card .features li::before {
+      content: '✓';
+      color: var(--success-color);
+      font-weight: bold;
+    }
+    .test-card .btn {
+      width: 100%;
+    }
+    .flow-section {
+      background: var(--background-panel);
+      border-radius: var(--border-radius-lg);
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .flow-section h3 {
+      margin-top: 0;
+      color: var(--primary-color);
+    }
+    .flow-steps {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .flow-step {
+      text-align: center;
+      flex: 1;
+      min-width: 120px;
+    }
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin: 0 auto 10px;
+    }
+    .step-title {
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .arrow {
+      font-size: 24px;
+      color: var(--text-light);
+    }
+    @media (max-width: 768px) {
+      .flow-steps {
+        flex-direction: column;
+      }
+      .arrow {
+        transform: rotate(90deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🧪 俄罗斯方块项目测试中心</h1>
+      <p>系统化测试页面 - 保障项目质量与稳定性</p>
+    </div>
+
+    <div class="flow-section">
+      <h3>📋 推荐测试流程</h3>
+      <div class="flow-steps">
+        <div class="flow-step">
+          <div class="step-number">1</div>
+          <div class="step-title">基础交互测试</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">DOM/事件/样式</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <div class="step-number">2</div>
+          <div class="step-title">用户系统测试</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">登录/注册/校验</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <div class="step-number">3</div>
+          <div class="step-title">游戏核心逻辑</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">方块/碰撞/消除</div>
+        </div>
+        <div class="arrow">→</div>
+        <div class="flow-step">
+          <div class="step-number">4</div>
+          <div class="step-title">完整游戏流程</div>
+          <div style="font-size: 12px; color: var(--text-secondary);">流程/存档/操控</div>
+        </div>
+      </div>
+    </div>
+
+    <h2 style="margin: 30px 0 20px; font-size: 22px;">⭐ 必建测试页面</h2>
+    
+    <div class="test-cards">
+      <div class="test-card mandatory">
+        <span class="badge mandatory">必建</span>
+        <h3>1. 基础交互测试页</h3>
+        <p>验证前端最基础的 DOM 操作、事件绑定、样式渲染（兜底测试）</p>
+        <ul class="features">
+          <li>DOM 元素获取与容错处理</li>
+          <li>事件绑定与触发验证</li>
+          <li>样式渲染与动态切换</li>
+          <li>弹窗反馈与日志输出</li>
+          <li>输入框交互与状态管理</li>
+        </ul>
+        <a href="test-1-basic.html" class="btn btn-primary">开始测试 →</a>
+      </div>
+
+      <div class="test-card mandatory">
+        <span class="badge mandatory">必建</span>
+        <h3>2. 用户系统测试页</h3>
+        <p>验证登录 / 注册、输入校验、接口对接、状态提示（用户体系核心）</p>
+        <ul class="features">
+          <li>空值与非法字符实时校验</li>
+          <li>用户名/密码规则验证</li>
+          <li>登录/注册表单无缝切换</li>
+          <li>模拟 API 请求与状态提示</li>
+          <li>完整的测试用例覆盖</li>
+        </ul>
+        <a href="test-2-user.html" class="btn btn-primary">开始测试 →</a>
+      </div>
+
+      <div class="test-card mandatory">
+        <span class="badge mandatory">必建</span>
+        <h3>3. 游戏核心逻辑测试页</h3>
+        <p>验证俄罗斯方块核心玩法：方块生成 / 移动 / 旋转 / 下落 / 碰撞检测</p>
+        <ul class="features">
+          <li>7种方块生成验证</li>
+          <li>移动旋转边界检测</li>
+          <li>碰撞检测不穿墙</li>
+          <li>单行/多行消除加分</li>
+          <li>游戏结束判定准确</li>
+        </ul>
+        <a href="test-3-game-logic.html" class="btn btn-primary">开始测试 →</a>
+      </div>
+    </div>
+
+    <h2 style="margin: 30px 0 20px; font-size: 22px;">🔧 可选增强测试页面</h2>
+
+    <div class="test-cards">
+      <div class="test-card optional">
+        <span class="badge optional">可选</span>
+        <h3>边界场景测试页</h3>
+        <p>验证极端情况处理能力，确保系统鲁棒性</p>
+        <ul class="features">
+          <li>方块填满屏幕游戏结束</li>
+          <li>快速连续操作无错乱</li>
+          <li>各种边界碰撞验证</li>
+          <li>非法参数容错处理</li>
+        </ul>
+        <button class="btn btn-secondary" disabled>开发中...</button>
+      </div>
+
+      <div class="test-card optional">
+        <span class="badge optional">可选</span>
+        <h3>兼容性测试页</h3>
+        <p>验证不同浏览器、不同设备的适配性</p>
+        <ul class="features">
+          <li>Chrome/Firefox/Edge 兼容</li>
+          <li>移动端响应式适配</li>
+          <li>高分屏 DPI 适配</li>
+          <li>触摸屏交互支持</li>
+        </ul>
+        <button class="btn btn-secondary" disabled>开发中...</button>
+      </div>
+
+      <div class="test-card optional">
+        <span class="badge optional">可选</span>
+        <h3>性能测试页</h3>
+        <p>验证高帧率下的渲染性能、内存占用、无卡顿</p>
+        <ul class="features">
+          <li>快速下落渲染帧率</li>
+          <li>内存泄漏检测</li>
+          <li>长时间运行稳定性</li>
+          <li>性能埋点数据分析</li>
+        </ul>
+        <button class="btn btn-secondary" disabled>开发中...</button>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 40px; padding: 20px; background: var(--background-panel); border-radius: var(--border-radius-lg);">
+      <p style="margin: 0; color: var(--text-secondary);">
+        💡 提示：按推荐测试流程顺序测试，可有效定位问题层级，避免一次性堆砌所有功能
+      </p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,10 +1,14 @@
 import Toast from '../utils/Toast.js';
+import { NETWORK_CONFIG, SOCKET_ONLINE_EVENTS } from '../config/onlineConfig.js';
 
 class SocketService {
   constructor() {
     this.socket = null;
     this.connected = false;
     this.eventHandlers = new Map();
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = NETWORK_CONFIG.RECONNECT_ATTEMPTS;
+    this.pendingOperations = new Map();
   }
 
   connect(token = null) {
@@ -77,22 +81,33 @@ class SocketService {
     }
   }
 
-  emit(event, data, timeout = 10000) {
-    return new Promise((resolve, reject) => {
-      if (!this.connected) {
-        Toast.error('服务器未连接，请稍后重试');
-        reject(new Error('Not connected'));
-        return;
-      }
+  async emit(event, data, options = {}) {
+    const {
+      timeout = NETWORK_CONFIG.OPERATION_TIMEOUT_MS,
+      retryCount = 0,
+      maxRetries = NETWORK_CONFIG.OPERATION_RETRY_COUNT,
+      showError = true
+    } = options;
 
+    if (!this.connected) {
+      if (showError) Toast.error('服务器未连接，请稍后重试');
+      throw new Error('Not connected');
+    }
+
+    return new Promise((resolve, reject) => {
       const timer = setTimeout(() => {
-        Toast.error('请求超时，请稍后重试');
-        reject(new Error('Timeout'));
+        if (retryCount < maxRetries) {
+          Toast.warning(`操作超时，第 ${retryCount + 1} 次重试...`);
+          resolve(this.emit(event, data, { ...options, retryCount: retryCount + 1 }));
+        } else {
+          if (showError) Toast.error('请求超时，请稍后重试');
+          reject(new Error('Timeout'));
+        }
       }, timeout);
 
       this.socket.emit(event, data, (response) => {
         clearTimeout(timer);
-        if (response && !response.success) {
+        if (response && !response.success && showError) {
           Toast.error(response.message || '操作失败');
         }
         resolve(response);

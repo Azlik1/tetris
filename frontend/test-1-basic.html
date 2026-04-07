@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测试1 - 基础交互测试</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+    }
+    h1 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .test-section {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .test-section h2 {
+      margin-top: 0;
+      color: #333;
+      font-size: 18px;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+    .test-row {
+      display: flex;
+      gap: 12px;
+      margin: 15px 0;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .btn:active {
+      transform: scale(0.98);
+    }
+    .btn-primary {
+      background: #4CAF50;
+      color: white;
+    }
+    .btn-primary:hover {
+      background: #45a049;
+    }
+    .btn-secondary {
+      background: #2196F3;
+      color: white;
+    }
+    .btn-secondary:hover {
+      background: #1976D2;
+    }
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
+    }
+    .btn-danger {
+      background: #ef4444;
+      color: white;
+    }
+    .log-container {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 15px;
+      border-radius: 8px;
+      font-family: 'Consolas', 'Monaco', monospace;
+      font-size: 13px;
+      max-height: 300px;
+      overflow-y: auto;
+      margin-top: 15px;
+    }
+    .log-item {
+      margin: 5px 0;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .log-info {
+      background: rgba(59, 130, 246, 0.2);
+      color: #60a5fa;
+    }
+    .log-success {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+    }
+    .log-error {
+      background: rgba(239, 68, 68, 0.2);
+      color: #f87171;
+    }
+    .log-warning {
+      background: rgba(245, 158, 11, 0.2);
+      color: #fbbf24;
+    }
+    .test-element {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .test-element:hover {
+      transform: scale(1.05);
+    }
+    input {
+      padding: 10px 15px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+    input:focus {
+      outline: none;
+      border-color: #4CAF50;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-left: 10px;
+    }
+    .status-pass {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .status-fail {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    .modal {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .summary-card {
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+    }
+    .summary-card h3 {
+      margin: 0;
+      font-size: 32px;
+    }
+    .summary-card p {
+      margin: 5px 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>🧪 测试1 - 基础交互验证</h1>
+
+  <div class="test-section">
+    <h2>📊 测试概览</h2>
+    <div class="summary">
+      <div class="summary-card" style="background: #dbeafe;">
+        <h3 id="totalTests">0</h3>
+        <p>总测试项</p>
+      </div>
+      <div class="summary-card" style="background: #dcfce7;">
+        <h3 id="passTests">0</h3>
+        <p style="color: #166534;">通过 ✅</p>
+      </div>
+      <div class="summary-card" style="background: #fee2e2;">
+        <h3 id="failTests">0</h3>
+        <p style="color: #991b1b;">失败 ❌</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="test-section">
+    <h2>1️⃣ DOM 元素获取测试</h2>
+    <div class="test-row">
+      <button class="btn btn-primary" id="testDomBtn">运行DOM测试</button>
+      <span id="domStatus"></span>
+    </div>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+      测试目标：验证 document.getElementById、querySelector 等DOM方法容错性
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>2️⃣ 事件绑定测试</h2>
+    <div class="test-row">
+      <div class="test-element" id="clickTarget">点我!</div>
+      <div>
+        <p>点击次数: <strong id="clickCount">0</strong></p>
+        <button class="btn btn-secondary" id="clearEventsBtn">清除并重新绑定</button>
+      </div>
+    </div>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+      测试目标：验证 addEventListener、事件触发、事件解绑
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>3️⃣ 样式渲染测试</h2>
+    <div class="test-row">
+      <button class="btn btn-primary" id="toggleStyleBtn">切换显示/隐藏</button>
+      <button class="btn btn-secondary" id="changeColorBtn">随机变色</button>
+      <div class="test-element" id="styleTarget">目标元素</div>
+    </div>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+      测试目标：验证 style.display、className、内联样式修改
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>4️⃣ 弹窗反馈测试</h2>
+    <div class="test-row">
+      <button class="btn btn-primary" id="showModalBtn">显示弹窗</button>
+      <button class="btn btn-warning" id="testAlertBtn">Alert弹窗</button>
+      <button class="btn btn-secondary" id="testConfirmBtn">Confirm确认框</button>
+    </div>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+      测试目标：验证模态框、系统弹窗、用户交互反馈
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>5️⃣ 输入框交互测试</h2>
+    <div class="test-row">
+      <input type="text" id="testInput" placeholder="输入内容测试...">
+      <button class="btn btn-primary" id="getInputBtn">获取值</button>
+      <button class="btn btn-danger" id="clearInputBtn">清空</button>
+    </div>
+    <div id="inputResult"></div>
+    <p style="color: #666; font-size: 13px; margin: 10px 0;">
+      测试目标：验证 input value 获取、设置、事件监听
+    </p>
+  </div>
+
+  <div class="test-section">
+    <h2>📝 测试日志</h2>
+    <button class="btn btn-secondary" id="clearLogBtn" style="margin-bottom: 10px;">清空日志</button>
+    <div class="log-container" id="logContainer"></div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <h3 style="margin-top: 0;">🎉 测试弹窗</h3>
+      <p>这是一个自定义模态框！</p>
+      <p style="color: #666; font-size: 14px;">点击遮罩层或按钮关闭</p>
+      <div style="display: flex; gap: 10px; margin-top: 20px;">
+        <button class="btn btn-primary" id="closeModalBtn" style="flex: 1;">确定</button>
+        <button class="btn btn-danger" style="flex: 1;" onclick="closeModal()">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const stats = { total: 0, pass: 0, fail: 0 };
+    
+    function updateStats() {
+      document.getElementById('totalTests').textContent = stats.total;
+      document.getElementById('passTests').textContent = stats.pass;
+      document.getElementById('failTests').textContent = stats.fail;
+    }
+
+    function log(message, type = 'info') {
+      const container = document.getElementById('logContainer');
+      const item = document.createElement('div');
+      const time = new Date().toLocaleTimeString();
+      item.className = `log-item log-${type}`;
+      item.textContent = `[${time}] ${message}`;
+      container.appendChild(item);
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function assert(testName, condition, successMsg, failMsg) {
+      stats.total++;
+      if (condition) {
+        stats.pass++;
+        log(`✅ ${testName}: ${successMsg}`, 'success');
+        return true;
+      } else {
+        stats.fail++;
+        log(`❌ ${testName}: ${failMsg}`, 'error');
+        return false;
+      }
+    }
+
+    function setStatus(elementId, passed, message) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = `<span class="status-badge status-${passed ? 'pass' : 'fail'}">${message}</span>`;
+    }
+
+    document.getElementById('testDomBtn').addEventListener('click', function() {
+      log('开始 DOM 测试...', 'warning');
+      
+      const tests = [
+        { name: '存在元素获取', test: !!document.getElementById('clickTarget'), ok: '成功获取 clickTarget', fail: '未找到 clickTarget' },
+        { name: '不存在元素容错', test: document.getElementById('nonExistent') === null, ok: 'null 正确返回', fail: '未正确返回 null' },
+        { name: 'querySelector 测试', test: !!document.querySelector('.test-element'), ok: '类选择器正常', fail: '类选择器失败' },
+        { name: 'querySelectorAll 测试', test: document.querySelectorAll('button').length > 0, ok: '找到按钮元素', fail: '未找到按钮元素' },
+      ];
+
+      let allPassed = true;
+      tests.forEach(t => {
+        if (!assert(t.name, t.test, t.ok, t.fail)) {
+          allPassed = false;
+        }
+      });
+
+      setStatus('domStatus', allPassed, allPassed ? '全部通过' : '存在失败');
+      updateStats();
+    });
+
+    let clickCount = 0;
+    function bindClickEvent() {
+      const target = document.getElementById('clickTarget');
+      target.removeEventListener('click', handleClick);
+      target.addEventListener('click', handleClick);
+      log('事件已重新绑定', 'info');
+    }
+    function handleClick() {
+      clickCount++;
+      document.getElementById('clickCount').textContent = clickCount;
+      log(`点击事件触发 #${clickCount}`, 'success');
+    }
+    bindClickEvent();
+
+    document.getElementById('clearEventsBtn').addEventListener('click', function() {
+      clickCount = 0;
+      document.getElementById('clickCount').textContent = '0';
+      bindClickEvent();
+    });
+
+    document.getElementById('toggleStyleBtn').addEventListener('click', function() {
+      const target = document.getElementById('styleTarget');
+      const isHidden = target.style.display === 'none';
+      target.style.display = isHidden ? 'flex' : 'none';
+      log(`样式切换: ${isHidden ? '显示' : '隐藏'}`, 'info');
+    });
+
+    document.getElementById('changeColorBtn').addEventListener('click', function() {
+      const target = document.getElementById('styleTarget');
+      const hue = Math.floor(Math.random() * 360);
+      target.style.background = `linear-gradient(135deg, hsl(${hue}, 70%, 60%), hsl(${(hue + 60) % 360}, 70%, 50%))`;
+      log(`颜色已变更: hue=${hue}`, 'info');
+    });
+
+    document.getElementById('showModalBtn').addEventListener('click', function() {
+      document.getElementById('modalOverlay').classList.add('active');
+      log('弹窗已显示', 'success');
+    });
+
+    window.closeModal = function() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      log('弹窗已关闭', 'info');
+    };
+
+    document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+    document.getElementById('modalOverlay').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+
+    document.getElementById('testAlertBtn').addEventListener('click', function() {
+      alert('这是 Alert 弹窗');
+      log('Alert 弹窗确认', 'success');
+    });
+
+    document.getElementById('testConfirmBtn').addEventListener('click', function() {
+      const result = confirm('这是 Confirm 确认框\n点击确定或取消');
+      log(`Confirm 结果: ${result ? '确定 ✅' : '取消 ❌'}`, result ? 'success' : 'warning');
+    });
+
+    document.getElementById('getInputBtn').addEventListener('click', function() {
+      const value = document.getElementById('testInput').value;
+      document.getElementById('inputResult').innerHTML = 
+        `<strong>输入值:</strong> <code>"${value}"</code> (长度: ${value.length})`;
+      log(`输入值获取: "${value}"`, 'info');
+    });
+
+    document.getElementById('clearInputBtn').addEventListener('click', function() {
+      document.getElementById('testInput').value = '';
+      document.getElementById('inputResult').innerHTML = '';
+      log('输入框已清空', 'info');
+    });
+
+    document.getElementById('clearLogBtn').addEventListener('click', function() {
+      document.getElementById('logContainer').innerHTML = '';
+    });
+
+    log('页面加载完成，测试系统就绪 🚀', 'success');
+    log('点击各区域按钮开始测试', 'info');
+  </script>
+</body>
+</html>

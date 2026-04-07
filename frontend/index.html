@@ -3,554 +3,276 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="多人在线俄罗斯方块游戏 - 支持单人、多人对战、排行榜">
   <title>多人在线俄罗斯方块游戏</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-    h1 {
-      color: #333;
-      margin-bottom: 20px;
-      text-align: center;
-    }
-    .login-container {
-      max-width: 400px;
-      margin: 50px auto;
-      padding: 30px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .game-container {
-      display: none;
-    }
-    .main-menu {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      margin: 50px 0;
-    }
-    .menu-button {
-      padding: 20px 40px;
-      font-size: 18px;
-      font-weight: bold;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s;
-    }
-    .menu-button:hover {
-      background-color: #45a049;
-    }
-    .menu-button.secondary {
-      background-color: #2196F3;
-    }
-    .menu-button.secondary:hover {
-      background-color: #1976D2;
-    }
-    .menu-button.tertiary {
-      background-color: #ff9800;
-    }
-    .menu-button.tertiary:hover {
-      background-color: #f57c00;
-    }
-    .game-mode-menu {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      margin: 50px 0;
-    }
-    .back-button {
-      padding: 10px 20px;
-      background-color: #9e9e9e;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    .back-button:hover {
-      background-color: #757575;
-    }
-    .section {
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      padding: 20px;
-      background-color: #f9f9f9;
-      margin-bottom: 20px;
-    }
-    .section h2 {
-      margin-top: 0;
-      color: #333;
-      font-size: 18px;
-    }
-    .form-group {
-      margin-bottom: 15px;
-    }
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
-    .form-group input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-    }
-    .form-group button {
-      width: 100%;
-      padding: 10px;
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .form-group button:hover {
-      background-color: #45a049;
-    }
-    .form-toggle {
-      text-align: center;
-      margin-top: 10px;
-    }
-    .form-toggle a {
-      color: #4CAF50;
-      text-decoration: none;
-    }
-    .form-toggle a:hover {
-      text-decoration: underline;
-    }
-    .message {
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 3px;
-    }
-    .message.error {
-      background-color: #ffebee;
-      color: #c62828;
-      border: 1px solid #ef9a9a;
-    }
-    .message.success {
-      background-color: #e8f5e8;
-      color: #2e7d32;
-      border: 1px solid #a5d6a7;
-    }
-    .user-info {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #e3f2fd;
-      border-radius: 3px;
-    }
-    .user-info h3 {
-      margin-top: 0;
-      color: #1565c0;
-    }
-    .game-area {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      margin-top: 30px;
-    }
-    .left-panel {
-      width: 250px;
-    }
-    .center-panel {
-      flex: 1;
-      text-align: center;
-    }
-    .right-panel {
-      width: 300px;
-    }
-    .game-info {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-      justify-content: center;
-      align-items: center;
-    }
-    .score-box {
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .next-piece {
-      border: 1px solid #ddd;
-      padding: 10px;
-      background-color: #f9f9f9;
-    }
-    .hold-piece {
-      border: 1px solid #ddd;
-      padding: 10px;
-      background-color: #f9f9f9;
-      margin-top: 20px;
-    }
-    #tetrisCanvas {
-      border: 2px solid #333;
-      background-color: #000;
-    }
-    #nextCanvas, #holdCanvas {
-      border: 1px solid #ddd;
-      background-color: #000;
-    }
-    .controls {
-      margin-top: 20px;
-      font-size: 14px;
-      color: #666;
-    }
-    .control-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .control-button {
-      padding: 10px;
-      background-color: #f0f0f0;
-      border: 1px solid #ddd;
-      border-radius: 3px;
-      cursor: pointer;
-      text-align: center;
-    }
-    .control-button:hover {
-      background-color: #e0e0e0;
-    }
-    .room-list {
-      max-height: 200px;
-      overflow-y: auto;
-      margin-bottom: 15px;
-    }
-    .room-item {
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-    }
-    .room-item:hover {
-      background-color: #f0f0f0;
-    }
-    .room-info {
-      margin-top: 15px;
-      padding: 10px;
-      background-color: #fff3e0;
-      border-radius: 3px;
-    }
-    .chat-area {
-      margin-top: 15px;
-    }
-    .chat-messages {
-      max-height: 200px;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      padding: 10px;
-      background-color: #fff;
-      margin-bottom: 10px;
-    }
-    .chat-message {
-      margin-bottom: 10px;
-      padding: 5px;
-      background-color: #f5f5f5;
-      border-radius: 3px;
-    }
-    .chat-message .username {
-      font-weight: bold;
-      color: #1565c0;
-    }
-    .chat-message .time {
-      font-size: 12px;
-      color: #999;
-      float: right;
-    }
-    .settings-menu {
-      display: none;
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-    .key-binding {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px;
-      border-bottom: 1px solid #eee;
-    }
-    .key-binding input {
-      width: 100px;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="./src/styles/main.css">
 </head>
 <body>
-  <h1>多人在线俄罗斯方块游戏</h1>
+  <h1>🎮 多人在线俄罗斯方块游戏</h1>
   
   <!-- 登录/注册界面 -->
   <div id="loginContainer" class="login-container">
     <div id="loginForm">
-      <h2>登录</h2>
-      <div id="loginMessage" class="message" style="display: none;"></div>
+      <h2>🔐 登录</h2>
+      <div id="loginMessage" class="message hidden"></div>
       <div class="form-group">
         <label for="loginUsername">用户名</label>
-        <input type="text" id="loginUsername" placeholder="请输入用户名">
+        <input type="text" id="loginUsername" name="username" placeholder="请输入用户名" autocomplete="username" aria-label="用户名输入">
       </div>
       <div class="form-group">
         <label for="loginPassword">密码</label>
-        <input type="password" id="loginPassword" placeholder="请输入密码">
+        <input type="password" id="loginPassword" name="password" placeholder="请输入密码" autocomplete="current-password" aria-label="密码输入">
       </div>
       <div class="form-group">
-        <button id="loginButton">登录</button>
+        <button id="loginButton" class="btn btn-primary" aria-label="登录按钮">登录</button>
       </div>
       <div class="form-toggle">
-        还没有账号？ <a href="#" id="showRegister">立即注册</a>
+        还没有账号？ <a href="#" id="showRegister" aria-label="切换到注册表单">立即注册</a>
       </div>
     </div>
     
-    <div id="registerForm" style="display: none;">
-      <h2>注册</h2>
-      <div id="registerMessage" class="message" style="display: none;"></div>
+    <div id="registerForm" class="hidden">
+      <h2>📝 注册</h2>
+      <div id="registerMessage" class="message hidden"></div>
       <div class="form-group">
         <label for="registerUsername">用户名</label>
-        <input type="text" id="registerUsername" placeholder="请输入用户名">
+        <input type="text" id="registerUsername" name="username" placeholder="3-20位字母、数字、下划线" autocomplete="username" aria-label="注册用户名">
       </div>
       <div class="form-group">
         <label for="registerPassword">密码</label>
-        <input type="password" id="registerPassword" placeholder="请输入密码">
+        <input type="password" id="registerPassword" name="password" placeholder="8位以上，含大小写、数字、特殊字符" autocomplete="new-password" aria-label="注册密码">
       </div>
       <div class="form-group">
-        <button id="registerButton">注册</button>
+        <button id="registerButton" class="btn btn-primary" aria-label="注册按钮">注册</button>
       </div>
       <div class="form-toggle">
-        已有账号？ <a href="#" id="showLogin">立即登录</a>
+        已有账号？ <a href="#" id="showLogin" aria-label="切换到登录表单">立即登录</a>
       </div>
     </div>
   </div>
   
   <!-- 游戏主界面 -->
-  <div id="gameContainer" class="game-container">
+  <div id="gameContainer" class="hidden">
     <!-- 主菜单 -->
     <div id="mainMenu" class="main-menu">
-      <button id="singlePlayerButton" class="menu-button">单人游戏</button>
-      <button id="multiPlayerButton" class="menu-button secondary">多人游戏</button>
-      <button id="rankButton" class="menu-button tertiary">排行榜</button>
-      <button id="settingsButton" class="menu-button tertiary">设置</button>
-      <button id="logoutButton" class="menu-button">登出</button>
+      <button id="singlePlayerButton" class="btn btn-menu btn-primary" aria-label="单人游戏">🎯 单人游戏</button>
+      <button id="multiPlayerButton" class="btn btn-menu btn-secondary" aria-label="多人游戏">👥 多人游戏</button>
+      <button id="rankButton" class="btn btn-menu btn-warning" aria-label="排行榜">🏆 排行榜</button>
+      <button id="settingsButton" class="btn btn-menu btn-warning" aria-label="设置">⚙️ 设置</button>
+      <button id="logoutButton" class="btn btn-menu btn-danger" aria-label="登出">🚪 登出</button>
     </div>
     
     <!-- 单人游戏模式选择 -->
-    <div id="singlePlayerMenu" class="game-mode-menu">
-      <h2>选择游戏模式</h2>
-      <button id="marathonButton" class="menu-button">Marathon</button>
-      <button id="timeAttackButton" class="menu-button">Time Attack</button>
-      <button id="fortyLinesButton" class="menu-button">40 Lines</button>
-      <button id="backToMainButton" class="back-button">返回主菜单</button>
+    <div id="singlePlayerMenu" class="game-mode-menu hidden">
+      <h2>🎮 选择游戏模式</h2>
+      <button id="marathonButton" class="btn btn-menu btn-primary">马拉松 (Marathon)</button>
+      <button id="timeAttackButton" class="btn btn-menu btn-secondary">限时挑战 (Time Attack)</button>
+      <button id="fortyLinesButton" class="btn btn-menu btn-warning">消行挑战 (40 Lines)</button>
+      <button id="backToMainButton" class="btn btn-back">← 返回主菜单</button>
     </div>
     
     <!-- 多人游戏模式 -->
-    <div id="multiPlayerMenu" class="game-mode-menu">
-      <h2>多人游戏</h2>
+    <div id="multiPlayerMenu" class="game-mode-menu hidden">
+      <h2>👥 多人游戏</h2>
       <div class="section">
-        <h3>房间管理</h3>
-        <div id="roomMessage" class="message" style="display: none;"></div>
+        <h3>🏠 房间管理</h3>
+        <div id="roomMessage" class="message hidden"></div>
         
         <!-- 房间列表 -->
-        <div class="room-list" id="roomList">
+        <div class="room-list scrollable" id="roomList">
           <div class="room-item" style="text-align: center; color: #999;">
             暂无房间
           </div>
         </div>
         
-        <!-- 创建房间 -->
+        <!-- 创建房间按钮 -->
         <div class="form-group">
-          <button id="createRoomButton">创建房间</button>
+          <button id="createRoomButton" class="btn btn-primary">➕ 创建房间</button>
         </div>
         
         <!-- 创建房间设置 -->
-        <div id="createRoomForm" style="display: none; margin-top: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
+        <div id="createRoomForm" class="hidden panel">
           <h4>房间设置</h4>
           <div class="form-group">
             <label for="roomName">房间名字</label>
-            <input type="text" id="roomName" placeholder="请输入房间名字" required>
+            <input type="text" id="roomName" name="roomName" placeholder="请输入房间名字" aria-label="房间名称">
           </div>
           <div class="form-group">
             <label for="roomCapacity">人数上限</label>
-            <select id="roomCapacity">
-              <option value="2">2人</option>
-              <option value="4">4人</option>
-              <option value="8">8人</option>
+            <select id="roomCapacity" aria-label="房间人数上限">
+              <option value="2">2人对战</option>
+              <option value="4">4人对战</option>
+              <option value="8">8人对战</option>
             </select>
           </div>
           <div class="form-group">
             <label for="roomPassword">密码（可选）</label>
-            <input type="password" id="roomPassword" placeholder="不设置密码则为公开房间">
+            <input type="password" id="roomPassword" placeholder="不设置密码则为公开房间" aria-label="房间密码">
           </div>
           <div class="form-group">
             <label for="roomMode">游戏模式</label>
-            <select id="roomMode">
-              <option value="MARATHON">Marathon</option>
-              <option value="FORTY_LINES">40 Lines</option>
-              <option value="TIME_ATTACK">Time Attack</option>
-              <option value="PVP">PVP</option>
-              <option value="BATTLE_ROYALE">Battle Royale</option>
-              <option value="TEAM_BATTLE">Team Battle</option>
+            <select id="roomMode" aria-label="游戏模式选择">
+              <option value="MARATHON">马拉松</option>
+              <option value="FORTY_LINES">40行挑战</option>
+              <option value="TIME_ATTACK">限时挑战</option>
+              <option value="PVP">PVP对战</option>
+              <option value="BATTLE_ROYALE">大逃杀</option>
+              <option value="TEAM_BATTLE">团队战</option>
             </select>
           </div>
-          <div class="form-group">
-            <button id="confirmCreateRoom">确认创建</button>
-            <button id="cancelCreateRoom">取消</button>
+          <div class="form-group" style="display: flex; gap: 10px;">
+            <button id="confirmCreateRoom" class="btn btn-primary" style="flex: 1;">✓ 确认创建</button>
+            <button id="cancelCreateRoom" class="btn btn-back" style="flex: 1;">✕ 取消</button>
           </div>
         </div>
         
         <!-- 加入房间 -->
         <div class="form-group">
           <label for="roomIdInput">房间ID</label>
-          <input type="text" id="roomIdInput" placeholder="请输入房间ID">
+          <input type="text" id="roomIdInput" name="roomId" placeholder="请输入房间ID" aria-label="房间ID">
         </div>
         <div class="form-group">
           <label for="joinRoomPassword">房间密码（如果有）</label>
-          <input type="password" id="joinRoomPassword" placeholder="请输入房间密码">
+          <input type="password" id="joinRoomPassword" placeholder="请输入房间密码" aria-label="加入房间密码">
         </div>
         <div class="form-group">
-          <button id="joinRoomButton">加入房间</button>
+          <button id="joinRoomButton" class="btn btn-secondary">🚪 加入房间</button>
         </div>
         <div class="form-group">
-          <button id="watchRoomButton" class="secondary">观战</button>
+          <button id="watchRoomButton" class="btn btn-secondary">👁️ 观战</button>
         </div>
         
         <!-- 当前房间信息 -->
-        <div id="currentRoomInfo" class="room-info" style="display: none;">
-          <h3>当前房间</h3>
+        <div id="currentRoomInfo" class="room-info hidden">
+          <h3>📋 当前房间</h3>
           <p><strong>房间ID:</strong> <span id="currentRoomId"></span></p>
           <p><strong>房间名字:</strong> <span id="currentRoomName"></span></p>
           <p><strong>状态:</strong> <span id="currentRoomStatus"></span></p>
           <p><strong>玩家:</strong> <span id="currentRoomPlayers"></span></p>
           <p><strong>观战者:</strong> <span id="currentRoomWatchers"></span></p>
           <div class="form-group">
-            <button id="startGameButton" style="background-color: #4CAF50; color: white;">开始游戏</button>
+            <button id="startGameButton" class="btn btn-primary">▶️ 开始游戏</button>
           </div>
           <div class="form-group">
-            <button id="addAIButton" style="background-color: #2196F3; color: white;">添加AI玩家</button>
+            <button id="addAIButton" class="btn btn-secondary">🤖 添加AI玩家</button>
           </div>
           <div class="form-group">
-            <button id="quitRoomButton" style="background-color: #f44336; color: white;">退出房间</button>
+            <button id="quitRoomButton" class="btn btn-danger">🚪 退出房间</button>
           </div>
         </div>
         
         <!-- 房间聊天 -->
-        <div class="chat-area" id="chatArea" style="display: none;">
-          <h3>聊天</h3>
-          <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-area" id="chatArea">
+          <h3>💬 聊天</h3>
+          <div class="chat-messages scrollable" id="chatMessages"></div>
           <div class="form-group">
-            <input type="text" id="chatInput" placeholder="输入消息...">
+            <input type="text" id="chatInput" name="chatMessage" placeholder="输入消息..." aria-label="聊天输入">
           </div>
           <div class="form-group">
-            <button id="sendChatButton">发送</button>
+            <button id="sendChatButton" class="btn btn-secondary">📤 发送</button>
           </div>
         </div>
       </div>
-      <button id="backToMainFromMulti" class="back-button">返回主菜单</button>
+      <button id="backToMainFromMulti" class="btn btn-back">← 返回主菜单</button>
     </div>
     
     <!-- 设置菜单 -->
-    <div id="settingsMenu" class="settings-menu">
-      <h2>设置</h2>
-      <h3>按键设置</h3>
+    <div id="settingsMenu" class="settings-menu section hidden">
+      <h2>⚙️ 设置</h2>
+      <h3>🎮 按键设置</h3>
+      <p style="color: #666; font-size: 13px; margin-bottom: 15px;">点击输入框，然后按下要绑定的按键</p>
       <div class="key-binding">
-        <span>向左移动</span>
-        <input type="text" id="keyLeft" value="左方向键" readonly onclick="startKeyBindingEdit('moveLeft')">
+        <span>⬅️ 向左移动</span>
+        <input type="text" id="keyLeft" value="左方向键" readonly aria-label="左移按键绑定">
       </div>
       <div class="key-binding">
-        <span>向右移动</span>
-        <input type="text" id="keyRight" value="右方向键" readonly onclick="startKeyBindingEdit('moveRight')">
+        <span>➡️ 向右移动</span>
+        <input type="text" id="keyRight" value="右方向键" readonly aria-label="右移按键绑定">
       </div>
       <div class="key-binding">
-        <span>向下移动</span>
-        <input type="text" id="keyDown" value="下方向键" readonly onclick="startKeyBindingEdit('moveDown')">
+        <span>⬇️ 向下移动</span>
+        <input type="text" id="keyDown" value="下方向键" readonly aria-label="下移按键绑定">
       </div>
       <div class="key-binding">
-        <span>向右旋转</span>
-        <input type="text" id="keyRotateRight" value="上方向键" readonly onclick="startKeyBindingEdit('rotateRight')">
+        <span>🔄 向右旋转</span>
+        <input type="text" id="keyRotateRight" value="上方向键" readonly aria-label="右旋按键绑定">
       </div>
       <div class="key-binding">
-        <span>向左旋转</span>
-        <input type="text" id="keyRotateLeft" value="Z" readonly onclick="startKeyBindingEdit('rotateLeft')">
+        <span>🔄 向左旋转</span>
+        <input type="text" id="keyRotateLeft" value="Z" readonly aria-label="左旋按键绑定">
       </div>
       <div class="key-binding">
-        <span>快速下降</span>
-        <input type="text" id="keyHardDrop" value="空格键" readonly onclick="startKeyBindingEdit('hardDrop')">
+        <span>⏬ 快速下降</span>
+        <input type="text" id="keyHardDrop" value="空格键" readonly aria-label="快降按键绑定">
       </div>
       <div class="key-binding">
-        <span>保存方块</span>
-        <input type="text" id="keyHold" value="C" readonly onclick="startKeyBindingEdit('hold')">
+        <span>📦 保存方块</span>
+        <input type="text" id="keyHold" value="C" readonly aria-label="保存按键绑定">
       </div>
       <div class="key-binding">
-        <span>暂停/恢复</span>
-        <input type="text" id="keyPause" value="P" readonly onclick="startKeyBindingEdit('pause')">
+        <span>⏸️ 暂停/恢复</span>
+        <input type="text" id="keyPause" value="P" readonly aria-label="暂停按键绑定">
       </div>
-      <div id="keyBindingMessage" class="message" style="display: none;"></div>
-      <div class="form-group" style="margin-top: 20px;">
-        <button id="backToMainFromSettings" class="back-button">返回主菜单</button>
+      <div id="keyBindingMessage" class="message hidden"></div>
+      <div class="form-group" style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="resetKeyBindings" class="btn btn-secondary" style="flex: 1;">🔄 恢复默认</button>
+        <button id="backToMainFromSettings" class="btn btn-back" style="flex: 1;">← 返回主菜单</button>
       </div>
     </div>
     
     <!-- 排行榜页面 -->
-    <div id="rankMenu" class="settings-menu">
-      <h2>排行榜</h2>
+    <div id="rankMenu" class="settings-menu section hidden">
+      <h2>🏆 排行榜</h2>
       <div class="form-group">
         <label>游戏模式</label>
-        <select id="rankModeSelect">
-          <option value="MARATHON">Marathon</option>
-          <option value="FORTY_LINES">40 Lines</option>
-          <option value="TIME_ATTACK">Time Attack</option>
+        <select id="rankModeSelect" aria-label="排行榜游戏模式">
+          <option value="MARATHON">马拉松</option>
+          <option value="FORTY_LINES">40行挑战</option>
+          <option value="TIME_ATTACK">限时挑战</option>
         </select>
       </div>
       <div class="form-group">
         <label>排序方式</label>
-        <select id="rankTypeSelect">
+        <select id="rankTypeSelect" aria-label="排行榜排序方式">
           <option value="score">按得分</option>
           <option value="win">按胜场</option>
         </select>
       </div>
       <div class="form-group">
         <label>显示数量</label>
-        <select id="rankLimitSelect">
+        <select id="rankLimitSelect" aria-label="排行榜显示数量">
           <option value="10">前10名</option>
           <option value="50">前50名</option>
           <option value="100">前100名</option>
         </select>
       </div>
       <div class="section">
-        <h3>全局排行榜</h3>
-        <div id="globalRankList" class="room-list">
+        <h3>🌐 全局排行榜</h3>
+        <div id="globalRankList" class="room-list scrollable">
           <div class="room-item" style="text-align: center; color: #999;">
             加载中...
           </div>
         </div>
       </div>
       <div class="section">
-        <h3>我的排名</h3>
-        <div id="userRankInfo" style="padding: 10px; background-color: #e3f2fd; border-radius: 3px;">
+        <h3>👤 我的排名</h3>
+        <div id="userRankInfo" class="panel">
           <p>正在获取排名...</p>
         </div>
       </div>
-      <div class="form-group" style="margin-top: 20px;">
-        <button id="refreshRankButton" class="menu-button">刷新排行榜</button>
-        <button id="backToMainFromRank" class="back-button">返回主菜单</button>
+      <div class="form-group" style="display: flex; gap: 10px; margin-top: 20px;">
+        <button id="refreshRankButton" class="btn btn-primary" style="flex: 1;">🔄 刷新排行榜</button>
+        <button id="backToMainFromRank" class="btn btn-back" style="flex: 1;">← 返回主菜单</button>
       </div>
     </div>
     
     <!-- 游戏区域 -->
-    <div id="gameArea" class="game-area" style="display: none;">
-      <!-- 左侧面板 - 用户信息和控制 -->
+    <div id="gameArea" class="game-area hidden">
       <div class="left-panel">
         <div class="section">
           <div id="userInfo">
             <div class="user-info">
-              <h3>用户信息</h3>
+              <h3>👤 用户信息</h3>
               <p><strong>用户名:</strong> <span id="username"></span></p>
               <p><strong>总得分:</strong> <span id="totalScore"></span></p>
               <p><strong>获胜次数:</strong> <span id="winCount"></span></p>
@@ -560,1254 +282,75 @@
         </div>
         
         <div class="section">
-          <h3>控制按钮</h3>
+          <h3>🎮 控制按钮</h3>
           <div class="control-buttons">
-            <div class="control-button" id="btnRotate">旋转</div>
-            <div class="control-button" id="btnDrop">快速下降</div>
-            <div class="control-button" id="btnHold">保存方块</div>
-            <div class="control-button" id="btnLeft">左移</div>
-            <div class="control-button" id="btnDown">下移</div>
-            <div class="control-button" id="btnRight">右移</div>
+            <div class="control-button" id="btnRotate" role="button" tabindex="0" aria-label="旋转方块">🔄 旋转</div>
+            <div class="control-button" id="btnDrop" role="button" tabindex="0" aria-label="快速下降">⏬ 快降</div>
+            <div class="control-button" id="btnHold" role="button" tabindex="0" aria-label="保存方块">📦 保存</div>
+            <div class="control-button" id="btnLeft" role="button" tabindex="0" aria-label="左移">⬅️ 左移</div>
+            <div class="control-button" id="btnDown" role="button" tabindex="0" aria-label="下移">⬇️ 下移</div>
+            <div class="control-button" id="btnRight" role="button" tabindex="0" aria-label="右移">➡️ 右移</div>
           </div>
           <div class="controls">
-            <p>控制: 方向键移动，上方向键旋转</p>
-            <p>空格键: 快速下降</p>
-            <p>C键: 保存方块</p>
+            <p>🎮 控制: 方向键移动，上方向键旋转</p>
+            <p>⏬ 空格键: 快速下降</p>
+            <p>📦 C键: 保存方块</p>
+            <p>⏸️ P键: 暂停游戏</p>
           </div>
         </div>
       </div>
       
-      <!-- 中间面板 - 游戏画布 -->
       <div class="center-panel">
         <div class="section">
           <div class="game-info">
             <div class="score-box">
-              得分: <span id="score">0</span>
+              🏆 得分: <span id="score">0</span>
             </div>
             <div class="next-piece">
-              下一个方块:
-              <canvas id="nextCanvas"></canvas>
+              下一个方块:<br>
+              <canvas id="nextCanvas" width="120" height="120"></canvas>
             </div>
             <div class="hold-piece">
-              保存的方块:
-              <canvas id="holdCanvas"></canvas>
+              保存的方块:<br>
+              <canvas id="holdCanvas" width="120" height="120"></canvas>
             </div>
           </div>
-          <canvas id="tetrisCanvas"></canvas>
-          <div class="form-group" style="margin-top: 20px; display: flex; gap: 10px; justify-content: center;">
-            <button id="startGameInSceneButton" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">开始游戏</button>
-            <button id="pauseButton" style="background-color: #f39c12; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">暂停</button>
-            <button id="backToModeSelectButton" style="background-color: #2196F3; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">返回模式选择</button>
-            <button id="backToMenuButton" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">返回菜单</button>
+          <div class="canvas-wrapper">
+            <canvas id="tetrisCanvas" width="300" height="600"></canvas>
+          </div>
+          <div style="display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+            <button id="startGameInSceneButton" class="btn btn-primary">▶️ 开始游戏</button>
+            <button id="pauseButton" class="btn btn-warning">⏸️ 暂停</button>
+            <button id="exitGameButton" class="btn btn-danger">🚪 退出游戏</button>
           </div>
         </div>
       </div>
       
-      <!-- 右侧面板 - 游戏信息 -->
       <div class="right-panel">
         <div class="section">
-          <h3>游戏信息</h3>
-          <p><strong>游戏模式:</strong> <span id="gameMode">Classic</span></p>
-          <p><strong>等级:</strong> <span id="level">1</span></p>
-          <p><strong>行数:</strong> <span id="lines">0</span></p>
+          <h3>📊 游戏状态</h3>
+          <div class="panel">
+            <p><strong>🎯 等级:</strong> <span id="level">1</span></p>
+            <p><strong>🧱 消行:</strong> <span id="lines">0</span></p>
+            <p><strong>⏱️ 时间:</strong> <span id="gameTime">00:00</span></p>
+            <p><strong>🎮 模式:</strong> <span id="gameMode">Marathon</span></p>
+            <p><strong>📈 连击:</strong> <span id="combo">0</span></p>
+          </div>
+        </div>
+        
+        <div class="section">
+          <h3>💡 游戏提示</h3>
+          <div class="panel" style="font-size: 13px; color: #666; line-height: 1.6;">
+            <p>• 组成完整的一行即可消除</p>
+            <p>• 一次消除越多行，得分越高</p>
+            <p>• 连续消除可获得连击加分</p>
+            <p>• 使用保存方块规划策略</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- 自定义确认对话框 -->
-  <div id="customConfirmDialog" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 1000; justify-content: center; align-items: center;">
-    <div style="background-color: white; padding: 20px; border-radius: 8px; width: 400px; text-align: center; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-      <h3 id="confirmTitle">确认操作</h3>
-      <p id="confirmMessage">您确定要执行此操作吗？</p>
-      <div style="margin-top: 20px; display: flex; justify-content: center; gap: 10px;">
-        <button id="confirmYes" style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">确定</button>
-        <button id="confirmNo" style="background-color: #e74c3c; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px;">取消</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 引入Socket.IO客户端 -->
-  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-  <!-- 引入用户管理模块 -->
-  <script type="module">
-    // 导入用户管理器和房间管理器
-    import userManager from './js/user.js';
-    import RoomManager from './js/room.js';
-    import TetrisOnline from './js/tetrisOnline.js';
-    
-    // 全局变量
-    let loginContainer, gameContainer, loginForm, registerForm, loginMessage, registerMessage;
-    let usernameElement, totalScoreElement, winCountElement, loseCountElement;
-    let mainMenu, singlePlayerMenu, multiPlayerMenu, settingsMenu, rankMenu, gameArea;
-    let roomMessage, roomList, roomIdInput, currentRoomInfo, currentRoomId;
-    let currentRoomStatus, currentRoomPlayers, currentRoomWatchers, chatArea, chatMessages, chatInput;
-    let rankPeriodSelect, rankModeSelect, rankTypeSelect, rankLimitSelect, globalRankList, userRankInfo;
-    // 全局变量
-    let socket, roomManager, tetrisOnline;
-    
-    // 初始化DOM元素
-    function initDOM() {
-      // DOM元素
-      loginContainer = document.getElementById('loginContainer');
-      gameContainer = document.getElementById('gameContainer');
-      loginForm = document.getElementById('loginForm');
-      registerForm = document.getElementById('registerForm');
-      loginMessage = document.getElementById('loginMessage');
-      registerMessage = document.getElementById('registerMessage');
-      usernameElement = document.getElementById('username');
-      totalScoreElement = document.getElementById('totalScore');
-      winCountElement = document.getElementById('winCount');
-      loseCountElement = document.getElementById('loseCount');
-      
-      // 菜单元素
-      mainMenu = document.getElementById('mainMenu');
-      singlePlayerMenu = document.getElementById('singlePlayerMenu');
-      multiPlayerMenu = document.getElementById('multiPlayerMenu');
-      settingsMenu = document.getElementById('settingsMenu');
-      rankMenu = document.getElementById('rankMenu');
-      gameArea = document.getElementById('gameArea');
-      
-      // 房间管理元素
-      roomMessage = document.getElementById('roomMessage');
-      roomList = document.getElementById('roomList');
-      roomIdInput = document.getElementById('roomIdInput');
-      currentRoomInfo = document.getElementById('currentRoomInfo');
-      currentRoomId = document.getElementById('currentRoomId');
-      currentRoomStatus = document.getElementById('currentRoomStatus');
-      currentRoomPlayers = document.getElementById('currentRoomPlayers');
-      currentRoomWatchers = document.getElementById('currentRoomWatchers');
-      chatArea = document.getElementById('chatArea');
-      chatMessages = document.getElementById('chatMessages');
-      chatInput = document.getElementById('chatInput');
-      
-      // 排行榜元素
-      rankPeriodSelect = document.getElementById('rankPeriodSelect');
-      rankModeSelect = document.getElementById('rankModeSelect');
-      rankTypeSelect = document.getElementById('rankTypeSelect');
-      rankLimitSelect = document.getElementById('rankLimitSelect');
-      globalRankList = document.getElementById('globalRankList');
-      userRankInfo = document.getElementById('userRankInfo');
-      
-      console.log('DOM元素初始化:', {
-        loginContainer: !!loginContainer,
-        gameContainer: !!gameContainer,
-        loginForm: !!loginForm,
-        registerForm: !!registerForm,
-        loginMessage: !!loginMessage,
-        registerMessage: !!registerMessage,
-        mainMenu: !!mainMenu,
-        roomMessage: !!roomMessage,
-        roomIdInput: !!roomIdInput,
-        rankMenu: !!rankMenu,
-        rankTypeSelect: !!rankTypeSelect,
-        globalRankList: !!globalRankList
-      });
-    }
-    
-    // 初始化应用
-    function initApp() {
-      initDOM();
-      
-      // 建立Socket连接
-      socket = io('http://localhost:3000');
-      
-      // 监听连接成功
-      socket.on('connect', () => {
-        console.log('连接成功:', socket.id);
-      });
-      
-      // 监听连接断开
-      socket.on('disconnect', () => {
-        console.log('连接断开');
-      });
-      
-      // 初始化房间管理器
-      roomManager = new RoomManager(socket);
-      
-      // 在线游戏实例
-      tetrisOnline = null;
-      
-      // 房间管理器事件回调
-      roomManager.onRoomCreated = function(roomInfo) {
-        showMessage(roomMessage, '房间创建成功', 'success');
-        updateCurrentRoomInfo(roomInfo);
-        // 进入游戏界面
-        multiPlayerMenu.style.display = 'none';
-        gameArea.style.display = 'block';
-        // 初始化在线游戏
-        tetrisOnline = new TetrisOnline(socket, roomInfo.roomId, userManager.getUser().id);
-        tetrisOnline.initGame();
-      };
-      
-      roomManager.onRoomJoined = function(roomInfo) {
-        showMessage(roomMessage, '加入房间成功', 'success');
-        updateCurrentRoomInfo(roomInfo);
-        // 进入游戏界面
-        multiPlayerMenu.style.display = 'none';
-        gameArea.style.display = 'block';
-        // 初始化在线游戏
-        tetrisOnline = new TetrisOnline(socket, roomInfo.roomId, userManager.getUser().id);
-        tetrisOnline.initGame();
-      };
-      
-      roomManager.onRoomQuit = function(response) {
-        showMessage(roomMessage, response.message, 'success');
-        hideCurrentRoomInfo();
-        // 返回到多人游戏菜单
-        gameArea.style.display = 'none';
-        multiPlayerMenu.style.display = 'flex';
-        // 销毁在线游戏实例，解绑键盘事件
-        if (tetrisOnline) {
-          tetrisOnline.destroy();
-          tetrisOnline = null;
-        }
-      };
-      
-      roomManager.onRoomWatchJoined = function(roomInfo) {
-        showMessage(roomMessage, '加入观战成功', 'success');
-        updateCurrentRoomInfo(roomInfo);
-        // 进入游戏界面
-        multiPlayerMenu.style.display = 'none';
-        gameArea.style.display = 'block';
-        // 初始化在线游戏（观战模式）
-        tetrisOnline = new TetrisOnline(socket, roomInfo.roomId, userManager.getUser().id);
-        tetrisOnline.initGame();
-      };
-      
-      roomManager.onAIAdded = function(roomInfo) {
-        showMessage(roomMessage, 'AI玩家添加成功', 'success');
-        updateCurrentRoomInfo(roomInfo);
-      };
-      
-      roomManager.onAIPlayerAdded = function(data) {
-        showMessage(roomMessage, 'AI玩家已加入房间', 'success');
-        updateCurrentRoomInfo(data.roomInfo);
-      };
-      
-      roomManager.onPlayerJoined = function(data) {
-        showMessage(roomMessage, `${data.player.name} 加入了房间`, 'success');
-        updateCurrentRoomInfo(data.roomInfo);
-      };
-      
-      roomManager.onPlayerLeft = function(data) {
-        showMessage(roomMessage, '玩家离开了房间', 'success');
-        updateCurrentRoomInfo(data.roomInfo);
-      };
-      
-      roomManager.onWatcherJoined = function(data) {
-        showMessage(roomMessage, `${data.watcher.name} 加入了观战`, 'success');
-        updateCurrentRoomInfo(data.roomInfo);
-      };
-      
-      roomManager.onRoomDestroyed = function(data) {
-        showMessage(roomMessage, '房间已销毁', 'success');
-        hideCurrentRoomInfo();
-        gameArea.style.display = 'none';
-        multiPlayerMenu.style.display = 'flex';
-        // 销毁在线游戏实例，解绑键盘事件
-        if (tetrisOnline) {
-          tetrisOnline.destroy();
-          tetrisOnline = null;
-        }
-      };
-      
-      roomManager.onChatMessage = function(data) {
-        addChatMessage(data);
-      };
-      
-      roomManager.onError = function(message) {
-        showMessage(roomMessage, message, 'error');
-      };
-      
-      // 房间列表更新回调
-      roomManager.onRoomListUpdated = function(rooms) {
-        const roomList = document.getElementById('roomList');
-        if (!roomList) return;
-        
-        roomList.innerHTML = '';
-        if (rooms.length === 0) {
-          roomList.innerHTML = '<div class="room-item" style="text-align: center; color: #999;">暂无房间</div>';
-          return;
-        }
-        
-        rooms.forEach(room => {
-          const roomItem = document.createElement('div');
-          roomItem.className = 'room-item';
-          roomItem.innerHTML = `
-            <h4>${room.roomName || '默认房间'} (${room.roomId})</h4>
-            <p>状态: ${room.status === 'waiting' ? '等待中' : '游戏中'}</p>
-            <p>人数: ${room.players.length}/${room.capacity || 2}</p>
-            <p>密码: ${room.password ? '是' : '否'}</p>
-            <button onclick="roomManager.joinRoom('${room.roomId}')">加入</button>
-            <button onclick="roomManager.joinWatch('${room.roomId}')">观战</button>
-          `;
-          roomList.appendChild(roomItem);
-        });
-      };
-    }
-    
-    // 在DOM加载完成后初始化应用
-    document.addEventListener('DOMContentLoaded', function() {
-      initApp();
-      
-      // 页面加载时自动登出，确保每次打开页面都显示登录界面
-      userManager.logout();
-      
-      // 初始化检查登录状态
-      if (userManager.isLoggedIn()) {
-        loginContainer.style.display = 'none';
-        gameContainer.style.display = 'block';
-        updateUserInfo();
-        // 获取房间列表
-        if (roomManager) {
-          roomManager.getRoomList();
-        }
-      } else {
-        loginContainer.style.display = 'block';
-        gameContainer.style.display = 'none';
-      }
-      
-      // 表单切换和按钮事件
-      const showRegister = document.getElementById('showRegister');
-      const showLogin = document.getElementById('showLogin');
-      const loginButton = document.getElementById('loginButton');
-      const registerButton = document.getElementById('registerButton');
-      const loginUsername = document.getElementById('loginUsername');
-      const loginPassword = document.getElementById('loginPassword');
-      const registerUsername = document.getElementById('registerUsername');
-      const registerPassword = document.getElementById('registerPassword');
-      const logoutButton = document.getElementById('logoutButton');
-      const singlePlayerButton = document.getElementById('singlePlayerButton');
-      const multiPlayerButton = document.getElementById('multiPlayerButton');
-      const settingsButton = document.getElementById('settingsButton');
-      const backToMainButton = document.getElementById('backToMainButton');
-      const backToMainFromMulti = document.getElementById('backToMainFromMulti');
-      const backToMainFromSettings = document.getElementById('backToMainFromSettings');
-      const rankButton = document.getElementById('rankButton');
-      const backToMainFromRank = document.getElementById('backToMainFromRank');
-      const refreshRankButton = document.getElementById('refreshRankButton');
-      const marathonButton = document.getElementById('marathonButton');
-      const classicButton = document.getElementById('classicButton');
-      const timeAttackButton = document.getElementById('timeAttackButton');
-      const createRoomButton = document.getElementById('createRoomButton');
-      const confirmCreateRoomButton = document.getElementById('confirmCreateRoom');
-      const cancelCreateRoomButton = document.getElementById('cancelCreateRoom');
-      const joinRoomButton = document.getElementById('joinRoomButton');
-      const watchRoomButton = document.getElementById('watchRoomButton');
-      const addAIButton = document.getElementById('addAIButton');
-      const quitRoomButton = document.getElementById('quitRoomButton');
-      const startGameButton = document.getElementById('startGameButton');
-      const sendChatButton = document.getElementById('sendChatButton');
-      const backToMenuButton = document.getElementById('backToMenuButton');
-      
-      console.log('DOM元素加载状态:', {
-        showRegister: !!showRegister,
-        showLogin: !!showLogin,
-        loginButton: !!loginButton,
-        registerButton: !!registerButton,
-        logoutButton: !!logoutButton,
-        singlePlayerButton: !!singlePlayerButton,
-        multiPlayerButton: !!multiPlayerButton,
-        settingsButton: !!settingsButton,
-        rankButton: !!rankButton,
-        backToMainFromRank: !!backToMainFromRank,
-        refreshRankButton: !!refreshRankButton,
-        marathonButton: !!marathonButton,
-        classicButton: !!classicButton,
-        timeAttackButton: !!timeAttackButton,
-        createRoomButton: !!createRoomButton,
-        confirmCreateRoomButton: !!confirmCreateRoomButton,
-        cancelCreateRoomButton: !!cancelCreateRoomButton,
-        joinRoomButton: !!joinRoomButton,
-        watchRoomButton: !!watchRoomButton,
-        addAIButton: !!addAIButton,
-        quitRoomButton: !!quitRoomButton,
-        startGameButton: !!startGameButton,
-        sendChatButton: !!sendChatButton,
-        backToMenuButton: !!backToMenuButton
-      });
-      
-      // 绑定注册链接点击事件
-      if (showRegister) {
-        showRegister.addEventListener('click', function(e) {
-          e.preventDefault();
-          console.log('点击了立即注册链接');
-          loginForm.style.display = 'none';
-          registerForm.style.display = 'block';
-        });
-      }
-      
-      // 绑定登录链接点击事件
-      if (showLogin) {
-        showLogin.addEventListener('click', function(e) {
-          e.preventDefault();
-          console.log('点击了立即登录链接');
-          registerForm.style.display = 'none';
-          loginForm.style.display = 'block';
-        });
-      }
-      
-      // 登录按钮事件
-      if (loginButton) {
-        loginButton.addEventListener('click', async () => {
-          const username = loginUsername.value.trim();
-          const password = loginPassword.value;
-          
-          console.log('登录按钮被点击，用户名:', username);
-          
-          // 输入验证
-          if (!username) {
-            showMessage(loginMessage, '请输入用户名', 'error');
-            return;
-          }
-          if (!password) {
-            showMessage(loginMessage, '请输入密码', 'error');
-            return;
-          }
-          if (username.length < 3 || username.length > 20) {
-            showMessage(loginMessage, '用户名长度应在3-20个字符之间', 'error');
-            return;
-          }
-          if (password.length < 6) {
-            showMessage(loginMessage, '密码长度至少为6个字符', 'error');
-            return;
-          }
-          
-          try {
-            console.log('开始登录请求');
-            const result = await userManager.login(username, password);
-            console.log('登录请求结果:', result);
-            if (result.success) {
-              showMessage(loginMessage, result.message, 'success');
-              
-              // 通过Socket.IO发送登录信息到服务器端
-              socket.emit('user_login', { username, password });
-              
-              setTimeout(() => {
-                loginContainer.style.display = 'none';
-                gameContainer.style.display = 'block';
-                updateUserInfo();
-                // 获取房间列表
-                if (roomManager) {
-                  roomManager.getRoomList();
-                }
-              }, 1000);
-            } else {
-              showMessage(loginMessage, result.message, 'error');
-            }
-          } catch (error) {
-            console.error('登录失败:', error);
-            showMessage(loginMessage, '登录失败，请稍后重试', 'error');
-          }
-        });
-      }
-      
-      // 注册按钮事件
-      if (registerButton) {
-        registerButton.addEventListener('click', async () => {
-          const username = registerUsername.value.trim();
-          const password = registerPassword.value;
-          
-          console.log('注册按钮被点击，用户名:', username);
-          
-          // 输入验证
-          if (!username) {
-            showMessage(registerMessage, '请输入用户名', 'error');
-            return;
-          }
-          if (!password) {
-            showMessage(registerMessage, '请输入密码', 'error');
-            return;
-          }
-          if (username.length < 3 || username.length > 20) {
-            showMessage(registerMessage, '用户名长度应在3-20个字符之间', 'error');
-            return;
-          }
-          if (password.length < 6) {
-            showMessage(registerMessage, '密码长度至少为6个字符', 'error');
-            return;
-          }
-          if (!/^[a-zA-Z0-9_]+$/.test(username)) {
-            showMessage(registerMessage, '用户名只能包含字母、数字和下划线', 'error');
-            return;
-          }
-          
-          try {
-            console.log('开始注册请求');
-            const result = await userManager.register(username, password);
-            console.log('注册请求结果:', result);
-            if (result.success) {
-              showMessage(registerMessage, result.message, 'success');
-              // 注册成功后切换到登录表单
-              setTimeout(() => {
-                registerForm.style.display = 'none';
-                loginForm.style.display = 'block';
-              }, 1000);
-            } else {
-              showMessage(registerMessage, result.message, 'error');
-            }
-          } catch (error) {
-            console.error('注册失败:', error);
-            showMessage(registerMessage, '注册失败，请稍后重试', 'error');
-          }
-        });
-      }
-      
-      // 登出按钮事件
-      if (logoutButton) {
-        logoutButton.addEventListener('click', () => {
-          userManager.logout();
-          gameContainer.style.display = 'none';
-          loginContainer.style.display = 'block';
-          loginForm.style.display = 'block';
-          registerForm.style.display = 'none';
-          hideCurrentRoomInfo();
-        });
-      }
-      
-      // 主菜单按钮事件
-      if (singlePlayerButton) {
-        singlePlayerButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(loginMessage, '请先登录', 'error');
-            return;
-          }
-          mainMenu.style.display = 'none';
-          singlePlayerMenu.style.display = 'flex';
-        });
-      }
-      
-      if (multiPlayerButton) {
-        multiPlayerButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(loginMessage, '请先登录', 'error');
-            return;
-          }
-          mainMenu.style.display = 'none';
-          multiPlayerMenu.style.display = 'flex';
-          // 获取房间列表
-          if (roomManager) {
-            roomManager.getRoomList();
-          }
-        });
-      }
-      
-      if (settingsButton) {
-        settingsButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(loginMessage, '请先登录', 'error');
-            return;
-          }
-          mainMenu.style.display = 'none';
-          settingsMenu.style.display = 'block';
-        });
-      }
-      
-      if (rankButton) {
-        rankButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(loginMessage, '请先登录', 'error');
-            return;
-          }
-          mainMenu.style.display = 'none';
-          rankMenu.style.display = 'block';
-          loadGlobalRank();
-          loadUserRank();
-        });
-      }
-      
-      // 返回主菜单按钮事件
-      if (backToMainButton) {
-        backToMainButton.addEventListener('click', () => {
-          singlePlayerMenu.style.display = 'none';
-          mainMenu.style.display = 'flex';
-        });
-      }
-      
-      if (backToMainFromMulti) {
-        backToMainFromMulti.addEventListener('click', () => {
-          multiPlayerMenu.style.display = 'none';
-          mainMenu.style.display = 'flex';
-        });
-      }
-      
-      if (backToMainFromSettings) {
-        backToMainFromSettings.addEventListener('click', () => {
-          settingsMenu.style.display = 'none';
-          mainMenu.style.display = 'flex';
-        });
-      }
-      
-      if (backToMainFromRank) {
-        backToMainFromRank.addEventListener('click', () => {
-          rankMenu.style.display = 'none';
-          mainMenu.style.display = 'flex';
-        });
-      }
-      
-      if (refreshRankButton) {
-        refreshRankButton.addEventListener('click', () => {
-          loadGlobalRank();
-          loadUserRank();
-        });
-      }
-      
-      if (rankPeriodSelect) {
-        rankPeriodSelect.addEventListener('change', () => {
-          loadGlobalRank();
-          loadUserRank();
-        });
-      }
-      
-      if (rankModeSelect) {
-        rankModeSelect.addEventListener('change', () => {
-          loadGlobalRank();
-          loadUserRank();
-        });
-      }
-      
-      if (rankTypeSelect) {
-        rankTypeSelect.addEventListener('change', () => {
-          loadGlobalRank();
-          loadUserRank();
-        });
-      }
-      
-      if (rankLimitSelect) {
-        rankLimitSelect.addEventListener('change', () => {
-          loadGlobalRank();
-        });
-      }
-      
-      // 单人游戏模式按钮事件
-      if (marathonButton) {
-        marathonButton.addEventListener('click', () => {
-          startGame('marathon');
-        });
-      }
-      
-
-      
-      if (timeAttackButton) {
-        timeAttackButton.addEventListener('click', () => {
-          startGame('time_attack');
-        });
-      }
-      
-      if (fortyLinesButton) {
-        fortyLinesButton.addEventListener('click', () => {
-          startGame('forty_lines');
-        });
-      }
-      
-      // 确认对话框事件处理
-      const confirmYes = document.getElementById('confirmYes');
-      if (confirmYes) {
-        confirmYes.addEventListener('click', () => {
-          if (confirmCallback) {
-            confirmCallback(true);
-          }
-          hideConfirm();
-        });
-      }
-      
-      const confirmNo = document.getElementById('confirmNo');
-      if (confirmNo) {
-        confirmNo.addEventListener('click', () => {
-          if (confirmCallback) {
-            confirmCallback(false);
-          }
-          hideConfirm();
-        });
-      }
-      
-      // 游戏控制按钮事件
-      if (backToMenuButton) {
-        backToMenuButton.addEventListener('click', () => {
-          // 检查游戏是否已结束
-          if (window.tetris && window.tetris.gameOver) {
-            // 游戏已结束，直接返回
-            gameArea.style.display = 'none';
-            mainMenu.style.display = 'flex';
-          } else {
-            // 游戏未结束，显示确认对话框
-            showConfirm('确认返回', '确定要返回主菜单吗？当前游戏进度将不会保存。', (confirmed) => {
-              if (confirmed) {
-                gameArea.style.display = 'none';
-                mainMenu.style.display = 'flex';
-                // 重置游戏状态
-                if (window.tetris) {
-                  // 可以在这里添加重置游戏的逻辑
-                }
-              }
-            });
-          }
-        });
-      }
-      
-      // 开始游戏按钮事件
-      if (startGameInSceneButton) {
-        startGameInSceneButton.addEventListener('click', () => {
-          if (!window.tetris) {
-            // 初始化tetris实例
-            window.tetris = new Tetris();
-            // 设置userManager
-            window.tetris.setUserManager(userManager);
-          }
-          if (window.tetris && window.currentGameMode) {
-            console.log('开始游戏，模式：', window.currentGameMode);
-            window.tetris.startGame(window.currentGameMode);
-            // 游戏开始后，按钮变为"重新开始"
-            startGameInSceneButton.textContent = '重新开始';
-          } else {
-            console.log('tetris未初始化或游戏模式未设置');
-          }
-        });
-      }
-      
-      // 返回模式选择按钮事件
-      if (backToModeSelectButton) {
-        backToModeSelectButton.addEventListener('click', () => {
-          // 检查游戏是否已结束
-          if (window.tetris && window.tetris.gameOver) {
-            // 游戏已结束，直接返回
-            gameArea.style.display = 'none';
-            singlePlayerMenu.style.display = 'flex';
-          } else {
-            // 游戏未结束，显示确认对话框
-            showConfirm('确认返回', '确定要返回模式选择吗？当前游戏进度将不会保存。', (confirmed) => {
-              if (confirmed) {
-                gameArea.style.display = 'none';
-                singlePlayerMenu.style.display = 'flex';
-                // 重置游戏状态
-                if (window.tetris) {
-                  // 可以在这里添加重置游戏的逻辑
-                }
-              }
-            });
-          }
-        });
-      }
-      
-      // 暂停按钮事件
-      const pauseButton = document.getElementById('pauseButton');
-      if (pauseButton) {
-        pauseButton.addEventListener('click', () => {
-          console.log('暂停按钮被点击');
-          if (tetrisOnline) {
-            console.log('调用tetrisOnline.togglePause()');
-            tetrisOnline.togglePause();
-          } else if (window.tetris) {
-            console.log('调用window.tetris.togglePause()');
-            window.tetris.togglePause();
-          } else {
-            console.log('tetris对象未初始化');
-          }
-        });
-        console.log('暂停按钮事件监听器初始化完成');
-      } else {
-        console.log('未找到暂停按钮');
-      }
-      
-      // 创建房间按钮事件
-      if (createRoomButton) {
-        createRoomButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(roomMessage, '请先登录', 'error');
-            return;
-          }
-          // 显示创建房间设置表单
-          document.getElementById('createRoomForm').style.display = 'block';
-        });
-      }
-      
-      // 确认创建房间按钮事件
-      if (confirmCreateRoomButton) {
-        confirmCreateRoomButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(roomMessage, '请先登录', 'error');
-            return;
-          }
-          const roomName = document.getElementById('roomName').value.trim();
-          if (!roomName) {
-            showMessage(roomMessage, '请输入房间名字', 'error');
-            return;
-          }
-          const capacity = parseInt(document.getElementById('roomCapacity').value);
-          const password = document.getElementById('roomPassword').value;
-          const mode = document.getElementById('roomMode').value;
-          roomManager.createRoom(roomName, mode, capacity, password);
-          // 隐藏创建房间设置表单
-          document.getElementById('createRoomForm').style.display = 'none';
-        });
-      }
-      
-      // 取消创建房间按钮事件
-      if (cancelCreateRoomButton) {
-        cancelCreateRoomButton.addEventListener('click', () => {
-          // 隐藏创建房间设置表单
-          document.getElementById('createRoomForm').style.display = 'none';
-        });
-      }
-      
-      // 加入房间按钮事件
-      if (joinRoomButton) {
-        joinRoomButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(roomMessage, '请先登录', 'error');
-            return;
-          }
-          const roomId = roomIdInput.value.trim();
-          if (!roomId) {
-            showMessage(roomMessage, '请输入房间ID', 'error');
-            return;
-          }
-          const password = document.getElementById('joinRoomPassword').value;
-          roomManager.joinRoom(roomId, password);
-        });
-      }
-      
-      // 观战按钮事件
-      if (watchRoomButton) {
-        watchRoomButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(roomMessage, '请先登录', 'error');
-            return;
-          }
-          const roomId = roomIdInput.value.trim();
-          if (!roomId) {
-            showMessage(roomMessage, '请输入房间ID', 'error');
-            return;
-          }
-          roomManager.joinWatch(roomId);
-        });
-      }
-      
-      // 添加AI玩家按钮事件
-      if (addAIButton) {
-        addAIButton.addEventListener('click', () => {
-          if (!userManager.isLoggedIn()) {
-            showMessage(roomMessage, '请先登录', 'error');
-            return;
-          }
-          const roomId = currentRoomId.textContent;
-          if (!roomId) {
-            showMessage(roomMessage, '请先加入房间', 'error');
-            return;
-          }
-          roomManager.addAIPlayer(roomId);
-        });
-      }
-      
-      // 退出房间按钮事件
-      if (quitRoomButton) {
-        quitRoomButton.addEventListener('click', () => {
-          roomManager.quitRoom();
-        });
-      }
-      
-      // 开始游戏按钮事件
-      if (startGameButton) {
-        startGameButton.addEventListener('click', () => {
-          const roomId = document.getElementById('currentRoomId').textContent;
-          if (!roomId) {
-            showMessage(roomMessage, '请先加入一个房间', 'error');
-            return;
-          }
-          
-          // 切换到游戏区域
-          document.getElementById('multiPlayerMenu').style.display = 'none';
-          document.getElementById('gameArea').style.display = 'block';
-          
-          // 初始化在线游戏
-          tetrisOnline = new TetrisOnline(socket, roomId, userManager.getUserId());
-          tetrisOnline.initGame();
-          
-          // 绑定暂停按钮事件
-          setTimeout(() => {
-            const pauseButton = document.getElementById('pauseButton');
-            if (pauseButton) {
-              console.log('找到暂停按钮，绑定事件监听器');
-              // 移除之前的事件监听器（如果有）
-              pauseButton.onclick = null;
-              // 添加新的事件监听器
-              pauseButton.onclick = function() {
-                console.log('暂停按钮被点击');
-                if (tetrisOnline) {
-                  console.log('调用tetrisOnline.togglePause()');
-                  tetrisOnline.togglePause();
-                } else {
-                  console.log('tetrisOnline未初始化');
-                }
-              };
-              console.log('暂停按钮事件监听器绑定完成');
-            } else {
-              console.log('未找到暂停按钮');
-            }
-          }, 1000);
-          
-          // 开始游戏
-          setTimeout(() => {
-            tetrisOnline.startGame();
-            console.log('游戏已开始');
-          }, 500);
-        });
-      }
-      
-      // 发送聊天消息按钮事件
-      if (sendChatButton) {
-        sendChatButton.addEventListener('click', () => {
-          const message = chatInput.value.trim();
-          if (message) {
-            roomManager.sendChatMessage(message);
-            chatInput.value = '';
-          }
-        });
-      }
-      
-      // 聊天输入框回车事件
-      if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') {
-            const message = chatInput.value.trim();
-            if (message) {
-              roomManager.sendChatMessage(message);
-              chatInput.value = '';
-            }
-          }
-        });
-      }
-    });
-    
-    // 暂停按钮点击事件处理函数
-    function togglePause() {
-      console.log('暂停按钮被点击');
-      if (tetrisOnline) {
-        console.log('调用tetrisOnline.togglePause()');
-        tetrisOnline.togglePause();
-      } else {
-        console.log('tetrisOnline未初始化');
-      }
-    }
-
-    // 按键修改相关函数
-    let currentKeyBindingAction = null;
-    
-    function startKeyBindingEdit(action) {
-      if (!tetrisOnline && !window.tetris) {
-        showMessage(document.getElementById('keyBindingMessage'), '请先开始游戏', 'error');
-        return;
-      }
-      
-      currentKeyBindingAction = action;
-      showMessage(document.getElementById('keyBindingMessage'), '请按下新的按键', 'success');
-      
-      // 开始按键修改
-      if (tetrisOnline) {
-        tetrisOnline.startKeyBindingEdit(action);
-      } else if (window.tetris) {
-        // 单人游戏模式下直接处理
-        console.log('开始按键修改:', action);
-      }
-      
-      // 添加键盘事件监听器来捕获新按键
-      function handleKeyPress(e) {
-        // 阻止默认行为
-        e.preventDefault();
-        
-        // 获取按下的键
-        let key = e.key;
-        
-        // 特殊键处理
-        if (key === ' ') key = ' '; // 空格键
-        
-        // 完成按键修改
-        completeKeyBindingEdit(key);
-        
-        // 移除事件监听器
-        document.removeEventListener('keydown', handleKeyPress);
-      }
-      
-      // 添加事件监听器
-      document.addEventListener('keydown', handleKeyPress);
-      
-      // 30秒后自动取消，如果用户没有按下按键
-      setTimeout(() => {
-        if (currentKeyBindingAction === action) {
-          cancelKeyBindingEdit();
-          document.removeEventListener('keydown', handleKeyPress);
-        }
-      }, 30000);
-    }
-    
-    function completeKeyBindingEdit(key) {
-      if ((!tetrisOnline && !window.tetris) || !currentKeyBindingAction) return;
-      
-      if (tetrisOnline) {
-        tetrisOnline.completeKeyBindingEdit(key);
-      } else if (window.tetris) {
-        // 单人游戏模式下直接处理
-        console.log('完成按键修改:', currentKeyBindingAction, '->', key);
-        // 这里可以添加单人游戏的按键修改逻辑
-        showMessage(document.getElementById('keyBindingMessage'), '按键修改成功', 'success');
-        // 更新按键显示
-        updateKeyBindingsDisplay({});
-      }
-      currentKeyBindingAction = null;
-    }
-    
-    function cancelKeyBindingEdit() {
-      if (!tetrisOnline && !window.tetris) return;
-      
-      if (tetrisOnline) {
-        tetrisOnline.cancelKeyBindingEdit();
-      }
-      currentKeyBindingAction = null;
-      showMessage(document.getElementById('keyBindingMessage'), '已取消按键修改', 'success');
-    }
-    
-    // 监听按键修改响应
-    if (socket) {
-      socket.on('game_start_keybinding_edit_response', (data) => {
-        if (data.success) {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'success');
-        } else {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'error');
-        }
-      });
-      
-      socket.on('game_complete_keybinding_edit_response', (data) => {
-        if (data.success) {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'success');
-          // 更新按键显示
-          updateKeyBindingsDisplay(data.keyBindings);
-        } else {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'error');
-        }
-      });
-      
-      socket.on('game_cancel_keybinding_edit_response', (data) => {
-        if (data.success) {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'success');
-        } else {
-          showMessage(document.getElementById('keyBindingMessage'), data.message, 'error');
-        }
-      });
-    }
-    
-    // 更新按键显示
-    function updateKeyBindingsDisplay(keyBindings) {
-      const keyMap = {
-        moveLeft: 'keyLeft',
-        moveRight: 'keyRight',
-        moveDown: 'keyDown',
-        rotateRight: 'keyRotateRight',
-        rotateLeft: 'keyRotateLeft',
-        hardDrop: 'keyHardDrop',
-        hold: 'keyHold',
-        pause: 'keyPause'
-      };
-      
-      for (const [action, key] of Object.entries(keyBindings)) {
-        const element = document.getElementById(keyMap[action]);
-        if (element) {
-          let displayKey = key;
-          switch (key) {
-            case 'ArrowLeft': displayKey = '左方向键'; break;
-            case 'ArrowRight': displayKey = '右方向键'; break;
-            case 'ArrowDown': displayKey = '下方向键'; break;
-            case 'ArrowUp': displayKey = '上方向键'; break;
-            case ' ': displayKey = '空格键'; break;
-          }
-          element.value = displayKey;
-        }
-      }
-    }
-    
-
-    
-
-    
-    // 显示消息
-    function showMessage(element, message, type) {
-      element.textContent = message;
-      element.className = `message ${type}`;
-      element.style.display = 'block';
-      setTimeout(() => {
-        element.style.display = 'none';
-      }, 3000);
-    }
-    
-    // 更新用户信息
-    async function updateUserInfo() {
-      const user = await userManager.getUserInfo();
-      if (user) {
-        usernameElement.textContent = user.username;
-        totalScoreElement.textContent = user.total_score;
-        winCountElement.textContent = user.win_count;
-        loseCountElement.textContent = user.lose_count;
-      }
-    }
-    
-    // 更新当前房间信息
-    function updateCurrentRoomInfo(roomInfo) {
-      currentRoomId.textContent = roomInfo.roomId;
-      const currentRoomName = document.getElementById('currentRoomName');
-      if (currentRoomName) {
-        currentRoomName.textContent = roomInfo.roomName || '默认房间';
-      }
-      currentRoomStatus.textContent = roomInfo.status === 'waiting' ? '等待中' : '游戏中';
-      currentRoomPlayers.textContent = roomInfo.players.map(p => p.name).join(', ');
-      currentRoomWatchers.textContent = roomInfo.watchers.map(w => w.name).join(', ');
-      currentRoomInfo.style.display = 'block';
-      chatArea.style.display = 'block';
-    }
-    
-    // 隐藏当前房间信息
-    function hideCurrentRoomInfo() {
-      currentRoomInfo.style.display = 'none';
-      chatArea.style.display = 'none';
-      chatMessages.innerHTML = '';
-    }
-    
-    // 添加聊天消息
-    function addChatMessage(data) {
-      const messageElement = document.createElement('div');
-      messageElement.className = 'chat-message';
-      const time = new Date(data.timestamp).toLocaleTimeString();
-      messageElement.innerHTML = `
-        <span class="username">${data.user.name}:</span>
-        <span class="time">${time}</span>
-        <div>${data.message}</div>
-      `;
-      chatMessages.appendChild(messageElement);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-    
-    // 当前选择的游戏模式
-    let selectedGameMode = 'marathon';
-    // 确认对话框回调函数
-    let confirmCallback = null;
-
-    // 显示自定义确认对话框
-    function showConfirm(title, message, callback) {
-      const dialog = document.getElementById('customConfirmDialog');
-      const confirmTitle = document.getElementById('confirmTitle');
-      const confirmMessage = document.getElementById('confirmMessage');
-      
-      confirmTitle.textContent = title;
-      confirmMessage.textContent = message;
-      confirmCallback = callback;
-      
-      dialog.style.display = 'flex';
-    }
-
-    // 隐藏自定义确认对话框
-    function hideConfirm() {
-      const dialog = document.getElementById('customConfirmDialog');
-      dialog.style.display = 'none';
-      confirmCallback = null;
-    }
-
-    // 开始游戏
-    function startGame(mode) {
-      singlePlayerMenu.style.display = 'none';
-      gameArea.style.display = 'flex';
-      let gameMode = 'MARATHON';
-      if (mode === 'marathon') {
-        gameMode = 'MARATHON';
-        document.getElementById('gameMode').textContent = 'Marathon';
-      } else if (mode === 'time_attack') {
-        gameMode = 'TIME_ATTACK';
-        document.getElementById('gameMode').textContent = 'Time Attack';
-      } else if (mode === 'forty_lines') {
-        gameMode = 'FORTY_LINES';
-        document.getElementById('gameMode').textContent = '40 Lines';
-      }
-      
-      // 存储当前游戏模式，等待用户点击开始游戏按钮
-      window.currentGameMode = gameMode;
-      
-      // 暂停按钮事件监听器已在页面加载时初始化
-      console.log('进入游戏场景，等待用户点击开始游戏按钮');
-
-    }
-    
-    // 加载全局排行榜
-    async function loadGlobalRank() {
-      try {
-        const mode = rankModeSelect.value;
-        const type = rankTypeSelect.value;
-        const limit = rankLimitSelect.value;
-        const response = await fetch(`/api/rank/global?type=${type}&mode=${mode}&limit=${limit}`, {
-          headers: {
-            'Authorization': `Bearer ${userManager.getToken()}`
-          }
-        });
-        const result = await response.json();
-        if (result.success) {
-          renderGlobalRank(result.rankList);
-        } else {
-          globalRankList.innerHTML = `<div class="room-item" style="text-align: center; color: #999;">暂无</div>`;
-        }
-      } catch (error) {
-        console.error('加载全局排行榜失败:', error);
-        globalRankList.innerHTML = `<div class="room-item" style="text-align: center; color: #999;">暂无</div>`;
-      }
-    }
-    
-    // 加载用户排名
-    async function loadUserRank() {
-      try {
-        const mode = rankModeSelect.value;
-        const type = rankTypeSelect.value;
-        const response = await fetch(`/api/rank/user?type=${type}&mode=${mode}`, {
-          headers: {
-            'Authorization': `Bearer ${userManager.getToken()}`
-          }
-        });
-        const result = await response.json();
-        if (result.success) {
-          if (result.rank === -1) {
-            userRankInfo.innerHTML = '<p>您还没有排名</p>';
-          } else {
-            userRankInfo.innerHTML = `<p>您的${type === 'score' ? '得分' : '胜场'}排名: <strong>${result.rank}</strong></p>`;
-          }
-        } else {
-          userRankInfo.innerHTML = '<p>暂无</p>';
-        }
-      } catch (error) {
-        console.error('加载用户排名失败:', error);
-        userRankInfo.innerHTML = '<p>暂无</p>';
-      }
-    }
-    
-    // 渲染全局排行榜
-    function renderGlobalRank(rankList) {
-      if (rankList.length === 0) {
-        globalRankList.innerHTML = `<div class="room-item" style="text-align: center; color: #999;">暂无数据</div>`;
-        return;
-      }
-      
-      let html = '';
-      for (const item of rankList) {
-        html += `
-          <div class="room-item">
-            <strong>第${item.rank}名</strong>
-            <span style="float: right;">${item.username}: ${item.score}${rankTypeSelect.value === 'score' ? '分' : '胜'}</span>
-          </div>
-        `;
-      }
-      globalRankList.innerHTML = html;
-    }
-    
-
-    
-
-  </script>
   
-  <!-- 引入俄罗斯方块逻辑 -->
-  <script src="js/tetris.js"></script>
+  <script type="module" src="./src/main.js"></script>
 </body>
 </html>
